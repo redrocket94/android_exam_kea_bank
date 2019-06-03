@@ -1,26 +1,19 @@
 package com.example.exam_project;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Account implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() {
-        @Override
-        public Account createFromParcel(Parcel in) {
-            return new Account(in);
-        }
-
-        @Override
-        public Account[] newArray(int size) {
-            return new Account[size];
-        }
-    };
     private int accountId;
     private Long customer_id;
     private AccountType accountType;
     private double amount = 0;
+    private boolean approved;
 
     public Account() {
     }
@@ -40,17 +33,19 @@ public class Account implements Parcelable {
         this.amount = amount;
     }
 
-    public Account(Long customer_id, AccountType accountType, double amount) {
+    public Account(Long customer_id, AccountType accountType, double amount, boolean approved) {
         this.customer_id = customer_id;
         this.accountType = accountType;
         this.amount = amount;
+        this.approved = approved;
     }
 
-    protected Account(Parcel in) {
-        accountId = in.readInt();
-        customer_id = in.readByte() == 0x00 ? null : in.readLong();
-        accountType = (AccountType) in.readValue(AccountType.class.getClassLoader());
-        amount = in.readDouble();
+    public Account(int accountId, Long customer_id, AccountType accountType, double amount, boolean approved) {
+        this.accountId = accountId;
+        this.customer_id = customer_id;
+        this.accountType = accountType;
+        this.amount = amount;
+        this.approved = approved;
     }
 
     public int getAccountId() {
@@ -85,6 +80,30 @@ public class Account implements Parcelable {
         this.customer_id = customer_id;
     }
 
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public enum AccountType {
+        BUDGET,
+        BUSINESS,
+        DEFAULT,
+        PENSION,
+        SAVINGS
+    }
+
+    protected Account(Parcel in) {
+        accountId = in.readInt();
+        customer_id = in.readByte() == 0x00 ? null : in.readLong();
+        accountType = (AccountType) in.readValue(AccountType.class.getClassLoader());
+        amount = in.readDouble();
+        approved = in.readByte() != 0x00;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -101,13 +120,19 @@ public class Account implements Parcelable {
         }
         dest.writeValue(accountType);
         dest.writeDouble(amount);
+        dest.writeByte((byte) (approved ? 0x01 : 0x00));
     }
 
-    public enum AccountType {
-        BUDGET,
-        BUSINESS,
-        DEFAULT,
-        PENSION,
-        SAVINGS
-    }
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() {
+        @Override
+        public Account createFromParcel(Parcel in) {
+            return new Account(in);
+        }
+
+        @Override
+        public Account[] newArray(int size) {
+            return new Account[size];
+        }
+    };
 }

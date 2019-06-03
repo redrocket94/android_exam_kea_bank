@@ -152,7 +152,8 @@ public class RegisterActivity extends AppCompatActivity {
             emailAddr.validate();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(RegisterActivity.this, "You need to input a valid email!", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         return result;

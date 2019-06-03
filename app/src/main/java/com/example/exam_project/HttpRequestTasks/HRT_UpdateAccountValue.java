@@ -13,18 +13,20 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
-public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateAccountValue extends AsyncTask<Void, Void, Data> {
 
 
     Long id;
-    String selection;
+    Account.AccountType accToSend;
+    Account.AccountType accToReceive;
+    Double value;
 
-    public HRT_UpdateUserAccountsById(Long id, String selection) {
+    public HRT_UpdateAccountValue(Long id, Account.AccountType accToSend, Account.AccountType accToReceive, Double value) {
         this.id = id;
-        this.selection = selection;
+        this.accToSend = accToSend;
+        this.accToReceive = accToReceive;
+        this.value = value;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
         if (userData == null) {
             return null;
         }
-        putUserDataAccounts(userData);
+        putAccountValue(userData);
         return null;
     }
 
@@ -62,16 +64,15 @@ public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
         return null;
     }
 
-    void putUserDataAccounts(Data userData) {
-        Map<String, String> putParams = new HashMap<String, String>();
-        putParams.put("accounts", selection);
+    void putAccountValue(Data userData) {
 
-        // Sets approval to false if business account, requires approval from Bank
-        if (selection.equals("BUSINESS")) {
-            userData.addAccount(new Account(userData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, false));
-
-        } else {
-            userData.addAccount(new Account(userData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, true));
+        for (Account account : userData.getAccounts()) {
+            if (accToReceive == account.getAccountType()) {
+                account.setAmount( account.getAmount() + value);
+            }
+            if (accToSend == account.getAccountType()) {
+                account.setAmount( account.getAmount() - value);
+            }
         }
 
         Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
@@ -81,6 +82,6 @@ public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer, putParams);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer);
     }
 }

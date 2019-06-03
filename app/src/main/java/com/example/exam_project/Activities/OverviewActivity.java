@@ -75,12 +75,8 @@ public class OverviewActivity extends AppCompatActivity {
 
         if (customer.getAccounts().size() == 0) {
             Toast.makeText(this, "No accounts, contact administration!", Toast.LENGTH_SHORT);
-        } else {
-            for (Account account :
-                    customer.getAccounts()) {
-                System.out.println(account.getAccountType().toString());
-            }
         }
+
 
 
         // Couldn't be made own class due to time restrictions and errors parsing data
@@ -108,11 +104,6 @@ public class OverviewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String selection = accTypeSpinner.getSelectedItem().toString();
-
-                        if (selection.equals("BUSINESS")) {
-                            Toast.makeText(OverviewActivity.this, "Please contact us during the weekday to get approved for a Business account!", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
 
                         new HRT_UpdateUserAccountsById(customerId, selection).execute();
 
@@ -153,20 +144,28 @@ public class OverviewActivity extends AppCompatActivity {
 
             Button button = new Button(this);
             button.setText("See details");
-            button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
 
-                    Intent intent = new Intent(OverviewActivity.this, AccountViewActivity.class);
+            // Test if you have approval for accounts, if not then disable and set button text
+            if (!account.isApproved()) {
+                button.setClickable(false);
+                button.setText("Approval Pending...");
+            } else {
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
 
-                    // Passes parcelable account object in intent.putExtra for next intent for use
-                    intent.putExtra("customerId", customerId);
-                    intent.putExtra("accountObject", account);
+                        Intent intent = new Intent(OverviewActivity.this, AccountViewActivity.class);
 
-                    // Start new AccountViewActivity
-                    startActivity(intent);
-                }
-            });
+                        // Passes parcelable account object in intent.putExtra for next intent for use
+                        intent.putExtra("customerId", customerId);
+                        intent.putExtra("accountObject", account);
+
+                        // Start new AccountViewActivity
+                        startActivity(intent);
+                    }
+                });
+            }
             table.addView(button);
+
         }
     }
 
