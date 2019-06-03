@@ -49,7 +49,7 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
 
             // Check for response code, returns null if 404 (not found)
             URL test_url = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection)test_url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) test_url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             int code = connection.getResponseCode();

@@ -1,7 +1,8 @@
 package com.example.exam_project.Activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,11 +13,11 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.Data;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.Modules.CustomSpinner;
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
 
-public class AccountViewActivity extends AppCompatActivity{
+public class AccountViewActivity extends AppCompatActivity {
 
     Account account;
     Customer customer;
@@ -42,12 +43,12 @@ public class AccountViewActivity extends AppCompatActivity{
         }
 
         // Connect Spinner in View to its functionality
-        new CustomSpinner(this, getApplicationContext(), customerId).connectSpinner();
+        new InfoSpinner(this, getApplicationContext(), customerId).connectSpinner();
 
         withdraw_btn = findViewById(R.id.withdraw_btn);
 
         // If account type is NOT Pension, hide Withdraw button
-        if ((account.getAccountType() != Account.AccountType.PENSION && customer.getAge() < 77)) {
+        if ((account.getAccountType() == Account.AccountType.PENSION && customer.getAge() < 77)) {
             withdraw_btn.setVisibility(View.INVISIBLE);
         }
 
@@ -59,4 +60,8 @@ public class AccountViewActivity extends AppCompatActivity{
         account_amount.setText(account_amount.getText() + " " + account.getAmount());
     }
 
+    public void onClickBack(View v) {
+        super.onStart();
+        startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
+    }
 }

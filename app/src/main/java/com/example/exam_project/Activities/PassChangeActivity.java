@@ -1,8 +1,8 @@
 package com.example.exam_project.Activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +12,7 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.Data;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateUser;
+import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserByEmail;
 import com.example.exam_project.R;
 
 public class PassChangeActivity extends AppCompatActivity {
@@ -36,9 +36,9 @@ public class PassChangeActivity extends AppCompatActivity {
         submit_btn = findViewById(R.id.submit_btn);
         cancel_btn = findViewById(R.id.cancel_btn);
 
-        curr_pass_input = (EditText) findViewById(R.id.curr_pass);
-        new_pass_input = (EditText) findViewById(R.id.new_pass);
-        new_pass_verify_input = (EditText) findViewById(R.id.new_pass_verify);
+        curr_pass_input = findViewById(R.id.curr_pass);
+        new_pass_input = findViewById(R.id.new_pass);
+        new_pass_verify_input = findViewById(R.id.new_pass_verify);
 
         customerId = getIntent().getLongExtra("customerId", 0);
 
@@ -58,7 +58,7 @@ public class PassChangeActivity extends AppCompatActivity {
     void onClickSubmit(View v) {
         String passToSend = passwordVerifier();
         if (passToSend != null) {
-            new HRT_UpdateUser(customer.getEmail(), passToSend).execute();
+            new HRT_UpdateUserByEmail(customer.getEmail(), passToSend).execute();
             Toast.makeText(this, "Successfully changed password!", Toast.LENGTH_SHORT).show();
 
             startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
@@ -66,7 +66,7 @@ public class PassChangeActivity extends AppCompatActivity {
     }
 
     void onClickCancel(View v) {
-        new Intent(this, OverviewActivity.class);
+        startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
     }
 
     private String passwordVerifier() {

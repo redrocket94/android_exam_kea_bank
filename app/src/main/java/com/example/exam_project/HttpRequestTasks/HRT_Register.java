@@ -56,7 +56,7 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
             // Get data by using email to test if already taken
             emailData = data_email();
             // Test if both are null, if yes then register new account with the information given
-            if (loginData == null  && emailData == null) {
+            if (loginData == null && emailData == null) {
                 // Send POST request to API
                 requestPOST();
                 return null;
@@ -78,7 +78,7 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
         if (loginData != null) {
             Toast.makeText(context.getApplicationContext(), "Username already exists! Try again.", Toast.LENGTH_SHORT).show();
             return;
-        } else if (emailData != null){
+        } else if (emailData != null) {
             Toast.makeText(context.getApplicationContext(), "Email already exists! Try again.", Toast.LENGTH_SHORT).show();
             return;
         }

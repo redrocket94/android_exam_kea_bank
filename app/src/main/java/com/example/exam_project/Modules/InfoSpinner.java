@@ -11,46 +11,25 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.exam_project.Activities.MainActivity;
-import com.example.exam_project.Activities.TransactionsActivity;
-import com.example.exam_project.Customer;
 import com.example.exam_project.Activities.PassChangeActivity;
+import com.example.exam_project.Activities.TransactionsActivity;
 import com.example.exam_project.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomSpinner extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Activity activity;
     Context context;
     Long customerId;
 
-    public CustomSpinner(Activity activity, Context context, Long customerId) {
+    public InfoSpinner(Activity activity, Context context, Long customerId) {
         this.activity = activity;
         this.context = context;
         this.customerId = customerId;
     }
 
-    public void connectSpinner() {
-        // Creating spinner
-        Spinner info_spinner = activity.findViewById(R.id.info_spinner);
-        List<String> list = new ArrayList<String>();
-        list.add("Transactions");
-        list.add("Change Password");
-        list.add("Log Out");
-        list.add("[More]");
-        final int listsize = list.size() - 1;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item, list) {
-            @Override
-            public int getCount() {
-                return(listsize); // Truncate the list
-            }
-        };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        info_spinner.setAdapter(adapter);
-        info_spinner.setOnItemSelectedListener(this);
-        info_spinner.setSelection(listsize);
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -71,11 +50,34 @@ public class CustomSpinner extends AppCompatActivity implements AdapterView.OnIt
             case "Log Out":
                 Toast.makeText(activity, "Successfully logged out!", Toast.LENGTH_SHORT).show();
                 activity.startActivity(new Intent(activity, MainActivity.class));
+                break;
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    public void connectSpinner() {
+        // Creating spinner
+        Spinner info_spinner = activity.findViewById(R.id.info_spinner);
+        List<String> list = new ArrayList<String>();
+        list.add("Transactions");
+        list.add("Change Password");
+        list.add("Log Out");
+        list.add("[More]");
+        final int listsize = list.size() - 1;
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list) {
+            @Override
+            public int getCount() {
+                return (listsize); // Truncate the list
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        info_spinner.setAdapter(adapter);
+        info_spinner.setOnItemSelectedListener(this);
+        info_spinner.setSelection(listsize);
     }
 }

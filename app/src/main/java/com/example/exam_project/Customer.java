@@ -11,6 +11,30 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer implements Parcelable {
 
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Customer> CREATOR = new Parcelable.Creator<Customer>() {
+        @Override
+        public Customer createFromParcel(Parcel in) {
+            return new Customer(in);
+        }
+
+        @Override
+        public Customer[] newArray(int size) {
+            return new Customer[size];
+        }
+    };
+    private int id;
+    // Ignore this
+    private Long customerId;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private String username;
+    private String password;
+    private String email;
+    private Bank bank;
+    private List<Account> accounts;
+
     public Customer(String username, String password, String email, String firstName, String lastName, int age, List<Account> accounts) {
         this.username = username;
         this.password = password;
@@ -20,29 +44,6 @@ public class Customer implements Parcelable {
         this.age = age;
         this.accounts = accounts;
     }
-
-
-    public enum Bank {
-        COPENHAGEN,
-        ODENSE
-    }
-
-    private int id;
-
-    // Ignore this
-    private Long customerId;
-
-    private String firstName;
-    private String lastName;
-    private int age;
-
-    private String username;
-    private String password;
-    private String email;
-
-    private Bank bank;
-
-    private List<Account> accounts;
 
     public Customer() {
     }
@@ -89,6 +90,22 @@ public class Customer implements Parcelable {
         this.email = email;
         this.bank = bank;
         this.accounts = accounts;
+    }
+
+    protected Customer(Parcel in) {
+        id = in.readInt();
+        firstName = in.readString();
+        lastName = in.readString();
+        age = in.readInt();
+        username = in.readString();
+        password = in.readString();
+        email = in.readString();
+        if (in.readByte() == 0x01) {
+            accounts = new ArrayList<Account>();
+            in.readList(accounts, Account.class.getClassLoader());
+        } else {
+            accounts = null;
+        }
     }
 
     public Long getCustomerId() {
@@ -171,22 +188,6 @@ public class Customer implements Parcelable {
         this.email = email;
     }
 
-    protected Customer(Parcel in) {
-        id = in.readInt();
-        firstName = in.readString();
-        lastName = in.readString();
-        age = in.readInt();
-        username = in.readString();
-        password = in.readString();
-        email = in.readString();
-        if (in.readByte() == 0x01) {
-            accounts = new ArrayList<Account>();
-            in.readList(accounts, Account.class.getClassLoader());
-        } else {
-            accounts = null;
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -209,19 +210,6 @@ public class Customer implements Parcelable {
         }
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Customer> CREATOR = new Parcelable.Creator<Customer>() {
-        @Override
-        public Customer createFromParcel(Parcel in) {
-            return new Customer(in);
-        }
-
-        @Override
-        public Customer[] newArray(int size) {
-            return new Customer[size];
-        }
-    };
-
     @Override
     public String toString() {
         return "Customer{" +
@@ -234,6 +222,11 @@ public class Customer implements Parcelable {
                 ", email='" + email + '\'' +
                 ", accounts=" + accounts +
                 '}';
+    }
+
+    public enum Bank {
+        COPENHAGEN,
+        ODENSE
     }
 
 }

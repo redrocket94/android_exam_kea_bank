@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HRT_UpdateUser extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateUserByEmail extends AsyncTask<Void, Void, Data> {
 
 
     String email;
@@ -24,12 +24,12 @@ public class HRT_UpdateUser extends AsyncTask<Void, Void, Data> {
     String passStr;
 
 
-    public HRT_UpdateUser(String email, int numericPass) {
+    public HRT_UpdateUserByEmail(String email, int numericPass) {
         this.email = email;
         this.numericPass = numericPass;
     }
 
-    public HRT_UpdateUser(String email, String passStr) {
+    public HRT_UpdateUserByEmail(String email, String passStr) {
         this.email = email;
         this.passStr = passStr;
     }
@@ -62,7 +62,7 @@ public class HRT_UpdateUser extends AsyncTask<Void, Void, Data> {
             String url = "http://10.0.2.2:8080/customers/search/findCustomerByEmail?email=" + email;
             // Check for response code, returns null if 404 (not found)
             URL test_url = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection)test_url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) test_url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             int code = connection.getResponseCode();

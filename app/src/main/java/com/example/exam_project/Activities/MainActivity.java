@@ -2,8 +2,8 @@ package com.example.exam_project.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,7 +15,7 @@ import com.example.exam_project.Dialogs.ForgotPassDialog;
 import com.example.exam_project.HttpRequestTasks.HRT_Login;
 import com.example.exam_project.R;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     Customer customer;
     Button login_btn;
@@ -67,9 +67,8 @@ public class MainActivity extends AppCompatActivity{
 
     public void onLoginClick(View v) {
         super.onStart();
-        new HRT_Login(username, password, MainActivity.this, remember_box, sharedPreferences, editor, customer).execute();;
+        new HRT_Login(username, password, MainActivity.this, remember_box, sharedPreferences, editor, customer).execute();
     }
-
 
 
     public void onRegisterClick(View v) {

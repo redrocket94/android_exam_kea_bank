@@ -98,4 +98,8 @@ public class Data {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void addAccount(Account accountToAdd) {
+        this.accounts.add(accountToAdd);
+    }
 }

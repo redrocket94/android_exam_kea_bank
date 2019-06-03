@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">KEA Bank</string>
+    <string-array name="accountTypes">
+        <item>Business</item>
+        <item>Pension</item>
+        <item>Savings</item>
+    </string-array>
 </resources>

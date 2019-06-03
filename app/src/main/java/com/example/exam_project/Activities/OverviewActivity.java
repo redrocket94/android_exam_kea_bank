@@ -1,10 +1,14 @@
 package com.example.exam_project.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,8 +19,12 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.Data;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.Modules.CustomSpinner;
+import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OverviewActivity extends AppCompatActivity {
@@ -24,16 +32,20 @@ public class OverviewActivity extends AppCompatActivity {
     Customer customer;
 
     Long customerId;
+    Button newAcc_btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
-        //customer = getIntent().getParcelableExtra("customerObject");
+
         customerId = getIntent().getLongExtra("customerId", 0);
 
+        newAcc_btn = findViewById(R.id.new_acc_btn);
+
         // Connect Spinner in View to its functionality
-        new CustomSpinner(this, getApplicationContext(), customerId).connectSpinner();
+        new InfoSpinner(this, OverviewActivity.this, customerId).connectSpinner();
 
         if (customer == null) {
             try {
@@ -70,7 +82,58 @@ public class OverviewActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println(customerId);
+
+        // Couldn't be made own class due to time restrictions and errors parsing data
+        newAcc_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                // Checks if user already has all accounts possible and returns, before a dialog can be built
+                List<String> list = addNewAccounts(customer);
+                if (list.size() == 0) {
+                    Toast.makeText(OverviewActivity.this, "Sorry, you already have all possible accounts!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.new_acc_dialog, null);
+                builder.setTitle("Opening a new account...");
+                final Spinner accTypeSpinner = mView.findViewById(R.id.new_acc_spinner);
+
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(OverviewActivity.this, android.R.layout.simple_spinner_item, list);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                accTypeSpinner.setAdapter(adapter);
+
+                builder.setPositiveButton("Open account", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selection = accTypeSpinner.getSelectedItem().toString();
+
+                        if (selection.equals("BUSINESS")) {
+                            Toast.makeText(OverviewActivity.this, "Please contact us during the weekday to get approved for a Business account!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        new HRT_UpdateUserAccountsById(customerId, selection).execute();
+
+                        // Refreshing page to display new account
+                        finish();
+                        startActivity(getIntent());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.setView(mView);
+                builder.show();
+            }
+
+        });
+
     }
 
     private void loadAccounts() {
@@ -106,4 +169,30 @@ public class OverviewActivity extends AppCompatActivity {
             table.addView(button);
         }
     }
+
+    List<String> addNewAccounts(Customer currCustomer) {
+        List<String> list = new ArrayList<>();
+        list.add("DEFAULT");
+        list.add("BUSINESS");
+        list.add("BUDGET");
+        list.add("PENSION");
+        list.add("SAVINGS");
+
+        for (Account account : currCustomer.getAccounts()) {
+            if (account.getAccountType() == Account.AccountType.DEFAULT) {
+                list.remove("DEFAULT");
+            } else if (account.getAccountType() == Account.AccountType.BUSINESS) {
+                list.remove("BUSINESS");
+            } else if (account.getAccountType() == Account.AccountType.BUDGET) {
+                list.remove("BUDGET");
+            } else if (account.getAccountType() == Account.AccountType.PENSION) {
+                list.remove("PENSION");
+            } else if (account.getAccountType() == Account.AccountType.SAVINGS) {
+                list.remove("SAVINGS");
+            }
+
+        }
+        return list;
+    }
+
 }

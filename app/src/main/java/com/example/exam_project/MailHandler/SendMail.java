@@ -1,12 +1,10 @@
 package com.example.exam_project.MailHandler;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.util.Properties;
-import java.util.Random;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,7 +15,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 
-
 // Extends AsyncTask because class needs to perform a network operation
 public class SendMail extends AsyncTask<Void, Void, Void> {
 
@@ -26,18 +23,11 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     // Declaring variables
     private Context context;
     private Session session;
-
-    public enum MailType {
-        PASSWORD_RESET,
-        TRANSACTION_CONFIRMATION
-    }
-
     // Important email sending data
     private MailType mailType;
     private String email;
     private String subject;
     private String message;
-
     private int generatedValue;
 
     public SendMail(Context context, MailType mailType, String email, int generatedValue) {
@@ -59,12 +49,12 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         super.onPreExecute();
 
         // Setting subject and message depending on mailType
-        if (mailType == mailType.PASSWORD_RESET) {
+        if (mailType == MailType.PASSWORD_RESET) {
 
             subject = "Password Reset - KEA Bank";
             message = "A new password has been requested for your account on KEA Bank\n\nNew password: " + generatedValue;
 
-        } else if (mailType == mailType.TRANSACTION_CONFIRMATION) {
+        } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
 
             subject = "Transaction Verification";
             message = "A new password has been requested for your account on KEA Bank\nNew password: " + generatedValue;
@@ -77,15 +67,15 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (hadNoError) {
-            if (mailType == mailType.PASSWORD_RESET) {
+            if (mailType == MailType.PASSWORD_RESET) {
                 Toast.makeText(context, "Requested new password!\nCheck your email for information.", Toast.LENGTH_SHORT).show();
-            } else if (mailType == mailType.TRANSACTION_CONFIRMATION) {
+            } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
                 Toast.makeText(context, "Transaction sent for verification!\nCheck your email for required pin.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            if (mailType == mailType.PASSWORD_RESET) {
+            if (mailType == MailType.PASSWORD_RESET) {
                 Toast.makeText(context, "Failed to request new password!", Toast.LENGTH_SHORT).show();
-            } else if (mailType == mailType.TRANSACTION_CONFIRMATION) {
+            } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
                 Toast.makeText(context, "Failed to make a transaction!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -105,12 +95,12 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
         // Create new session
         session = Session.getDefaultInstance(properties,
-                    new javax.mail.Authenticator() {
-                        // Authenticating password
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(Config.EMAIL, Config.PASSWORD);
-                        }
-                    });
+                new javax.mail.Authenticator() {
+                    // Authenticating password
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(Config.EMAIL, Config.PASSWORD);
+                    }
+                });
 
         try {
             // Create MimeMessage
@@ -131,6 +121,11 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         }
         return null;
 
+    }
+
+    public enum MailType {
+        PASSWORD_RESET,
+        TRANSACTION_CONFIRMATION
     }
 
 }

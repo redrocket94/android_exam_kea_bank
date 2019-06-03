@@ -3,22 +3,28 @@ package com.example.exam_project.HttpRequestTasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.exam_project.Account;
+import com.example.exam_project.Customer;
 import com.example.exam_project.Data;
 
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-public class HRT_GetUserById extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
 
 
     Long id;
+    String selection;
 
-
-    public HRT_GetUserById(Long id) {
+    public HRT_UpdateUserAccountsById(Long id, String selection) {
         this.id = id;
+        this.selection = selection;
     }
 
     @Override
@@ -28,7 +34,8 @@ public class HRT_GetUserById extends AsyncTask<Void, Void, Data> {
         if (userData == null) {
             return null;
         }
-        return userData;
+        putUserDataAccounts(userData);
+        return null;
     }
 
     Data getUserData() {
@@ -53,5 +60,21 @@ public class HRT_GetUserById extends AsyncTask<Void, Void, Data> {
             Log.e("LoginActivity", e.getMessage(), e);
         }
         return null;
+    }
+
+    void putUserDataAccounts(Data userData) {
+        Map<String, String> putParams = new HashMap<String, String>();
+        putParams.put("accounts", selection);
+
+        userData.addAccount(new Account(userData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0));
+
+        Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
+                userData.getPassword(), userData.getEmail(), Customer.Bank.valueOf(userData.getBank()), userData.getAccounts());
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer, putParams);
     }
 }
