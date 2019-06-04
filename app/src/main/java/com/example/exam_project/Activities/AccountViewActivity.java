@@ -140,4 +140,38 @@ public class AccountViewActivity extends AppCompatActivity {
         }
         return userAccountsList;
     }
+
+    public void onClickWithdraw (View v) {
+        super.onStart();
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.withdraw_dialog, null);
+        builder.setTitle("Withdrawing from: " + account.getAccountType().toString());
+
+        final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
+
+        builder.setPositiveButton("Withdraw", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                double amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
+
+                // Make sure there's enough money to transfer by getting current amount of money on account
+                if (amountToWithdraw > account.getAmount()) {
+                    Toast.makeText(AccountViewActivity.this, "You cannot withdraw more money than you have on your account!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                new HRT_UpdateAccountValue(customerId, account.getAccountType(), Account.AccountType.DEFAULT, amountToWithdraw).execute();
+                startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setView(mView);
+        builder.show();
+    }
 }
