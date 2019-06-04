@@ -18,8 +18,8 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.Data;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateAccountValue;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
+import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
+import com.example.exam_project.HttpRequestTasks.HRT_UpdateInternalAccValue;
 import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
@@ -105,7 +105,7 @@ public class AccountViewActivity extends AppCompatActivity {
                             Toast.makeText(AccountViewActivity.this, "You need to deposit more than 0.5!", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        new HRT_UpdateAccountValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
+                        new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
                         startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
 
                     }
@@ -159,7 +159,43 @@ public class AccountViewActivity extends AppCompatActivity {
                     Toast.makeText(AccountViewActivity.this, "You cannot withdraw more money than you have on your account!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new HRT_UpdateAccountValue(customerId, account.getAccountType(), Account.AccountType.DEFAULT, amountToWithdraw).execute();
+                new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.DEFAULT, amountToWithdraw).execute();
+                startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setView(mView);
+        builder.show();
+    }
+
+    public void onClickUserDeposit(View v) {
+        super.onStart();
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.user_deposit_dialog, null);
+        builder.setTitle("Sending from account: " + account.getAccountType().toString());
+
+        final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
+        final EditText email_input = mView.findViewById(R.id.email_input);
+
+        builder.setPositiveButton("Make transaction", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                double amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
+                String email = email_input.getText().toString();
+
+                // Make sure there's enough money to transfer by getting current amount of money on account
+                if (amountToWithdraw > account.getAmount()) {
+                    Toast.makeText(AccountViewActivity.this, "You cannot send more money than you have on your account!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
                 startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
 
             }

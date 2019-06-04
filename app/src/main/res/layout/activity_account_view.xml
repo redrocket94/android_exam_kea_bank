@@ -64,14 +64,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="144dp"
         android:onClick="onClickWithdraw"
         android:text="Withdraw to default account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/deposit_btn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/deposit_btn"
-        app:layout_constraintTop_toBottomOf="@+id/deposit_btn"
+        app:layout_constraintTop_toBottomOf="@+id/deposit_external_btn"
         app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
@@ -108,5 +108,18 @@
         app:layout_constraintStart_toStartOf="@+id/withdraw_btn"
         app:layout_constraintTop_toBottomOf="@+id/withdraw_btn"
         app:layout_constraintVertical_bias="0.97" />
+
+    <Button
+        android:id="@+id/deposit_external_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:onClick="onClickUserDeposit"
+        android:text="Deposit to external user account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/deposit_btn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/deposit_btn"
+        app:layout_constraintTop_toBottomOf="@+id/deposit_btn"
+        app:layout_constraintVertical_bias="0.024" />
 
 </android.support.constraint.ConstraintLayout>

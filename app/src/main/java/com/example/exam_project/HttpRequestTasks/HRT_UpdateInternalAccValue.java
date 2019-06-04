@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HRT_UpdateAccountValue extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, Data> {
 
 
     Long id;
@@ -22,7 +22,7 @@ public class HRT_UpdateAccountValue extends AsyncTask<Void, Void, Data> {
     Account.AccountType accToReceive;
     Double value;
 
-    public HRT_UpdateAccountValue(Long id, Account.AccountType accToSend, Account.AccountType accToReceive, Double value) {
+    public HRT_UpdateInternalAccValue(Long id, Account.AccountType accToSend, Account.AccountType accToReceive, Double value) {
         this.id = id;
         this.accToSend = accToSend;
         this.accToReceive = accToReceive;
