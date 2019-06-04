@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
@@ -36,7 +36,7 @@ public class AccountViewActivity extends AppCompatActivity {
     Button withdraw_btn;
     Button deposit_btn;
 
-    Data data;
+    CustomerData customerData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class AccountViewActivity extends AppCompatActivity {
 
         if (customer == null) {
             try {
-                data = new HRT_GetUserById(customerId).execute().get();
-                customer = new DataCustomerParser().dataToCustomer(data);
+                customerData = new HRT_GetUserById(customerId).execute().get();
+                customer = new DataCustomerParser().dataToCustomer(customerData);
 
             } catch (Exception e) {
                 e.printStackTrace();

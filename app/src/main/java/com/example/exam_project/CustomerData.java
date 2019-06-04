@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Data {
+public class CustomerData {
 
     private Long customerId;
     private String username;

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, Data> {
+public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, CustomerData> {
 
 
     Account sendingAccount;
@@ -31,18 +31,18 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
-        Data userData = getUserData();
+    protected CustomerData doInBackground(Void... params) {
+        CustomerData userCustomerData = getUserData();
 
-        if (userData == null) {
+        if (userCustomerData == null) {
             return null;
         }
 
-        putAccountValue(userData);
+        putAccountValue(userCustomerData);
         return null;
     }
 
-    Data getUserData() {
+    CustomerData getUserData() {
         try {
             String url = "http://10.0.2.2:8080/customers/search/findCustomerByEmail?email=" + emailOfReceiver;
             // Check for response code, returns null if 404 (not found)
@@ -58,34 +58,34 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, Data> {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            Data data = restTemplate.getForObject(url, Data.class);
-            return data;
+            CustomerData customerData = restTemplate.getForObject(url, CustomerData.class);
+            return customerData;
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
         }
         return null;
     }
 
-    void putAccountValue(Data userData) {
-        putReceiverAccountValue(userData);
+    void putAccountValue(CustomerData userCustomerData) {
+        putReceiverAccountValue(userCustomerData);
         putSenderAccountValue(customer);
     }
 
-    private void putReceiverAccountValue(Data receiverData) {
-        for (Account account : receiverData.getAccounts()) {
+    private void putReceiverAccountValue(CustomerData receiverCustomerData) {
+        for (Account account : receiverCustomerData.getAccounts()) {
             if (Account.AccountType.DEFAULT == account.getAccountType()) {
                 account.setAmount(account.getAmount() + value);
             }
         }
 
-        Customer updatedCustomerReceiver = new Customer(receiverData.getCustomerId(), receiverData.getFirstName(), receiverData.getLastName(), receiverData.getAge(), receiverData.getUsername(),
-                receiverData.getPassword(), receiverData.getEmail(), Customer.Bank.valueOf(receiverData.getBank()), receiverData.getAccounts());
+        Customer updatedCustomerReceiver = new Customer(receiverCustomerData.getCustomerId(), receiverCustomerData.getFirstName(), receiverCustomerData.getLastName(), receiverCustomerData.getAge(), receiverCustomerData.getUsername(),
+                receiverCustomerData.getPassword(), receiverCustomerData.getEmail(), Customer.Bank.valueOf(receiverCustomerData.getBank()), receiverCustomerData.getAccounts());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + receiverData.getCustomerId(), updatedCustomerReceiver);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + receiverCustomerData.getCustomerId(), updatedCustomerReceiver);
     }
 
 
@@ -104,6 +104,9 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, Data> {
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
         restTemplate.put("http://10.0.2.2:8080/customers/" + senderData.getCustomerId(), updatedCustomerSender);
+
+        new HRT_PostTransaction(value, getUserData().getCustomerId(), senderData.getCustomerId(), sendingAccount.getAccountType()).execute();
+
     }
 
 }

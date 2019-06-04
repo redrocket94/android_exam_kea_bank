@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HRT_UpdateUserByEmail extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateUserByEmail extends AsyncTask<Void, Void, CustomerData> {
 
 
     String email;
@@ -35,29 +35,29 @@ public class HRT_UpdateUserByEmail extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
+    protected CustomerData doInBackground(Void... params) {
 
         // Test if numeric pass is greater than 0, which means constructor for numericPass has been used
         if (numericPass > 0) {
             // Get userdata from email identifier
-            Data userData = getUserData();
+            CustomerData userCustomerData = getUserData();
 
-            if (userData != null) {
-                putUserDataNumeric(userData);
+            if (userCustomerData != null) {
+                putUserDataNumeric(userCustomerData);
             }
 
         } else if (passStr != null) {
-            Data userData = getUserData();
+            CustomerData userCustomerData = getUserData();
 
-            if (userData != null) {
-                putUserDataStr(userData);
+            if (userCustomerData != null) {
+                putUserDataStr(userCustomerData);
             }
 
         }
         return null;
     }
 
-    Data getUserData() {
+    CustomerData getUserData() {
         try {
             String url = "http://10.0.2.2:8080/customers/search/findCustomerByEmail?email=" + email;
             // Check for response code, returns null if 404 (not found)
@@ -73,41 +73,41 @@ public class HRT_UpdateUserByEmail extends AsyncTask<Void, Void, Data> {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            Data data = restTemplate.getForObject(url, Data.class);
-            return data;
+            CustomerData customerData = restTemplate.getForObject(url, CustomerData.class);
+            return customerData;
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
         }
         return null;
     }
 
-    void putUserDataNumeric(Data userData) {
+    void putUserDataNumeric(CustomerData userCustomerData) {
         String passStr = Integer.toString(numericPass);
         Map<String, String> putParams = new HashMap<String, String>();
         putParams.put("password", passStr);
 
-        Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
-                passStr, userData.getEmail(), Customer.Bank.valueOf(userData.getBank()), userData.getAccounts());
+        Customer updatedCustomer = new Customer(userCustomerData.getCustomerId(), userCustomerData.getFirstName(), userCustomerData.getLastName(), userCustomerData.getAge(), userCustomerData.getUsername(),
+                passStr, userCustomerData.getEmail(), Customer.Bank.valueOf(userCustomerData.getBank()), userCustomerData.getAccounts());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer, putParams);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userCustomerData.getCustomerId(), updatedCustomer, putParams);
     }
 
-    void putUserDataStr(Data userData) {
+    void putUserDataStr(CustomerData userCustomerData) {
         Map<String, String> putParams = new HashMap<String, String>();
         putParams.put("password", passStr);
 
-        Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
-                passStr, userData.getEmail(), Customer.Bank.valueOf(userData.getBank()), userData.getAccounts());
+        Customer updatedCustomer = new Customer(userCustomerData.getCustomerId(), userCustomerData.getFirstName(), userCustomerData.getLastName(), userCustomerData.getAge(), userCustomerData.getUsername(),
+                passStr, userCustomerData.getEmail(), Customer.Bank.valueOf(userCustomerData.getBank()), userCustomerData.getAccounts());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer, putParams);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userCustomerData.getCustomerId(), updatedCustomer, putParams);
     }
 
 }

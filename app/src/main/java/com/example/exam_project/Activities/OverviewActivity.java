@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
@@ -49,8 +49,8 @@ public class OverviewActivity extends AppCompatActivity {
 
         if (customer == null) {
             try {
-                Data data = new HRT_GetUserById(customerId).execute().get();
-                customer = new DataCustomerParser().dataToCustomer(data);
+                CustomerData customerData = new HRT_GetUserById(customerId).execute().get();
+                customer = new DataCustomerParser().dataToCustomer(customerData);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -59,7 +59,7 @@ public class OverviewActivity extends AppCompatActivity {
 
         // If customerId is 0, return to loginactivity
         if (customerId == 0) {
-            Toast.makeText(this, "There was an error retrieving your account data, please log in again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "There was an error retrieving your account customerData, please log in again.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
 
@@ -78,8 +78,7 @@ public class OverviewActivity extends AppCompatActivity {
         }
 
 
-
-        // Couldn't be made own class due to time restrictions and errors parsing data
+        // Couldn't be made own class due to time restrictions and errors parsing customerData
         newAcc_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 

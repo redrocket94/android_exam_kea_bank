@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserByEmail;
@@ -45,8 +45,8 @@ public class PassChangeActivity extends AppCompatActivity {
 
         if (customer == null) {
             try {
-                Data data = new HRT_GetUserById(customerId).execute().get();
-                customer = new DataCustomerParser().dataToCustomer(data);
+                CustomerData customerData = new HRT_GetUserById(customerId).execute().get();
+                customer = new DataCustomerParser().dataToCustomer(customerData);
 
             } catch (Exception e) {
                 e.printStackTrace();

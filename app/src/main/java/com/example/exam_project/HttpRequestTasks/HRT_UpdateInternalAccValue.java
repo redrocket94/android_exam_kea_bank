@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, CustomerData> {
 
 
     Long id;
@@ -30,17 +30,17 @@ public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
-        Data userData = getUserData();
+    protected CustomerData doInBackground(Void... params) {
+        CustomerData userCustomerData = getUserData();
 
-        if (userData == null) {
+        if (userCustomerData == null) {
             return null;
         }
-        putAccountValue(userData);
+        putAccountValue(userCustomerData);
         return null;
     }
 
-    Data getUserData() {
+    CustomerData getUserData() {
         try {
             String url = "http://10.0.2.2:8080/customers/" + id;
             // Check for response code, returns null if 404 (not found)
@@ -56,17 +56,17 @@ public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, Data> {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            Data data = restTemplate.getForObject(url, Data.class);
-            return data;
+            CustomerData customerData = restTemplate.getForObject(url, CustomerData.class);
+            return customerData;
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
         }
         return null;
     }
 
-    void putAccountValue(Data userData) {
+    void putAccountValue(CustomerData userCustomerData) {
 
-        for (Account account : userData.getAccounts()) {
+        for (Account account : userCustomerData.getAccounts()) {
             if (accToReceive == account.getAccountType()) {
                 account.setAmount( account.getAmount() + value);
             }
@@ -75,13 +75,13 @@ public class HRT_UpdateInternalAccValue extends AsyncTask<Void, Void, Data> {
             }
         }
 
-        Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
-                userData.getPassword(), userData.getEmail(), Customer.Bank.valueOf(userData.getBank()), userData.getAccounts());
+        Customer updatedCustomer = new Customer(userCustomerData.getCustomerId(), userCustomerData.getFirstName(), userCustomerData.getLastName(), userCustomerData.getAge(), userCustomerData.getUsername(),
+                userCustomerData.getPassword(), userCustomerData.getEmail(), Customer.Bank.valueOf(userCustomerData.getBank()), userCustomerData.getAccounts());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userCustomerData.getCustomerId(), updatedCustomer);
     }
 }

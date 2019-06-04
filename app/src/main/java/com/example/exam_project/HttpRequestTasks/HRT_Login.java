@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.exam_project.Activities.OverviewActivity;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HRT_Login extends AsyncTask<Void, Void, Data> {
+public class HRT_Login extends AsyncTask<Void, Void, CustomerData> {
 
     EditText username;
     EditText password;
@@ -40,7 +40,7 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
+    protected CustomerData doInBackground(Void... params) {
         try {
             String url = "http://10.0.2.2:8080/customers/search/findCustomerByUsernameAndPassword?username=" +
                     username.getText().toString() +
@@ -59,8 +59,8 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            Data data = restTemplate.getForObject(url, Data.class);
-            return data;
+            CustomerData customerData = restTemplate.getForObject(url, CustomerData.class);
+            return customerData;
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
         }
@@ -69,10 +69,10 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected void onPostExecute(Data data) {
+    protected void onPostExecute(CustomerData customerData) {
 
-        // Check data username and data password are not null
-        if (data == null) {
+        // Check customerData username and customerData password are not null
+        if (customerData == null) {
             Toast.makeText(context, "Make sure both username and password are filled out and try again!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -81,9 +81,9 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
         String username_input = username.getText().toString();
         String password_input = password.getText().toString();
 
-        // Checks to see whether username and password in the returned data matches with the data input by user
+        // Checks to see whether username and password in the returned customerData matches with the customerData input by user
         try {
-            if (data.getUsername().equals(username_input) && data.getPassword().equals(password_input)) {
+            if (customerData.getUsername().equals(username_input) && customerData.getPassword().equals(password_input)) {
 
                 //// ON SUCCESS:
 
@@ -106,11 +106,11 @@ public class HRT_Login extends AsyncTask<Void, Void, Data> {
                 Intent intent = new Intent(context, OverviewActivity.class);
 
                 // Passes parcelable customer object (with accounts) in intent.putExtra to next intent for use
-                customer = new Customer(data.getUsername(), data.getPassword(), data.getEmail(), data.getFirstName(), data.getLastName(), data.getAge(), data.getAccounts());
+                customer = new Customer(customerData.getUsername(), customerData.getPassword(), customerData.getEmail(), customerData.getFirstName(), customerData.getLastName(), customerData.getAge(), customerData.getAccounts());
                 intent.putExtra("customerObject", customer);
 
                 // Have to pass customerId in own putExtra due to bug
-                intent.putExtra("customerId", data.getCustomerId());
+                intent.putExtra("customerId", customerData.getCustomerId());
 
                 // Start new LoginActivity
                 context.startActivity(intent);

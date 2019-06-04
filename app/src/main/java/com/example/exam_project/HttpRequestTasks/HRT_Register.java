@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.example.exam_project.Activities.MainActivity;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HRT_Register extends AsyncTask<Void, Void, Data> {
+public class HRT_Register extends AsyncTask<Void, Void, CustomerData> {
 
     EditText firstName;
     EditText lastName;
@@ -34,7 +34,7 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
     int code;
     Context context;
 
-    Data emailData;
+    CustomerData emailCustomerData;
 
     public HRT_Register(EditText firstName, EditText lastName, EditText age, EditText username, EditText password, EditText email, Location userlocation, Context context) {
         this.firstName = firstName;
@@ -48,20 +48,20 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
+    protected CustomerData doInBackground(Void... params) {
         try {
 
             // Get data by using username and password to test if already taken
-            Data loginData = data_userPass();
+            CustomerData loginCustomerData = data_userPass();
             // Get data by using email to test if already taken
-            emailData = data_email();
+            emailCustomerData = data_email();
             // Test if both are null, if yes then register new account with the information given
-            if (loginData == null && emailData == null) {
+            if (loginCustomerData == null && emailCustomerData == null) {
                 // Send POST request to API
                 requestPOST();
                 return null;
             } else {
-                return loginData;
+                return loginCustomerData;
             }
 
         } catch (Exception e) {
@@ -72,13 +72,13 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected void onPostExecute(Data loginData) {
+    protected void onPostExecute(CustomerData loginCustomerData) {
 
         // Check data username and data password are not null
-        if (loginData != null) {
+        if (loginCustomerData != null) {
             Toast.makeText(context.getApplicationContext(), "Username already exists! Try again.", Toast.LENGTH_SHORT).show();
             return;
-        } else if (emailData != null) {
+        } else if (emailCustomerData != null) {
             Toast.makeText(context.getApplicationContext(), "Email already exists! Try again.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -89,7 +89,7 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
 
     }
 
-    private Data data_userPass() {
+    private CustomerData data_userPass() {
         try {
             String url_userpass = "http://10.0.2.2:8080/customers/search/findCustomerByUsername?username=" +
                     username.getText().toString();
@@ -104,8 +104,8 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
             if (code == 200) {
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                Data data = restTemplate.getForObject(url_userpass, Data.class);
-                return data;
+                CustomerData customerData = restTemplate.getForObject(url_userpass, CustomerData.class);
+                return customerData;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
         return null;
     }
 
-    private Data data_email() {
+    private CustomerData data_email() {
         try {
             String url_userpass = "http://10.0.2.2:8080/customers/search/findCustomerByEmail?email=" +
                     email.getText().toString();
@@ -128,8 +128,8 @@ public class HRT_Register extends AsyncTask<Void, Void, Data> {
             if (code == 200) {
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                Data data = restTemplate.getForObject(url_userpass, Data.class);
-                return data;
+                CustomerData customerData = restTemplate.getForObject(url_userpass, CustomerData.class);
+                return customerData;
             }
         } catch (Exception e) {
             e.printStackTrace();

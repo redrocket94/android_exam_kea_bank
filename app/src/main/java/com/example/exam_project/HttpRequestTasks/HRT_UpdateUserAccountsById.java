@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
-import com.example.exam_project.Data;
+import com.example.exam_project.CustomerData;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
+public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, CustomerData> {
 
 
     Long id;
@@ -28,17 +28,17 @@ public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
     }
 
     @Override
-    protected Data doInBackground(Void... params) {
-        Data userData = getUserData();
+    protected CustomerData doInBackground(Void... params) {
+        CustomerData userCustomerData = getUserData();
 
-        if (userData == null) {
+        if (userCustomerData == null) {
             return null;
         }
-        putUserDataAccounts(userData);
+        putUserDataAccounts(userCustomerData);
         return null;
     }
 
-    Data getUserData() {
+    CustomerData getUserData() {
         try {
             String url = "http://10.0.2.2:8080/customers/" + id;
             // Check for response code, returns null if 404 (not found)
@@ -54,33 +54,33 @@ public class HRT_UpdateUserAccountsById extends AsyncTask<Void, Void, Data> {
 
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            Data data = restTemplate.getForObject(url, Data.class);
-            return data;
+            CustomerData customerData = restTemplate.getForObject(url, CustomerData.class);
+            return customerData;
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
         }
         return null;
     }
 
-    void putUserDataAccounts(Data userData) {
+    void putUserDataAccounts(CustomerData userCustomerData) {
         Map<String, String> putParams = new HashMap<String, String>();
         putParams.put("accounts", selection);
 
         // Sets approval to false if business account, requires approval from Bank
         if (selection.equals("BUSINESS")) {
-            userData.addAccount(new Account(userData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, false));
+            userCustomerData.addAccount(new Account(userCustomerData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, false));
 
         } else {
-            userData.addAccount(new Account(userData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, true));
+            userCustomerData.addAccount(new Account(userCustomerData.getCustomerId(), Account.AccountType.valueOf(selection), 0.0, true));
         }
 
-        Customer updatedCustomer = new Customer(userData.getCustomerId(), userData.getFirstName(), userData.getLastName(), userData.getAge(), userData.getUsername(),
-                userData.getPassword(), userData.getEmail(), Customer.Bank.valueOf(userData.getBank()), userData.getAccounts());
+        Customer updatedCustomer = new Customer(userCustomerData.getCustomerId(), userCustomerData.getFirstName(), userCustomerData.getLastName(), userCustomerData.getAge(), userCustomerData.getUsername(),
+                userCustomerData.getPassword(), userCustomerData.getEmail(), Customer.Bank.valueOf(userCustomerData.getBank()), userCustomerData.getAccounts());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-        restTemplate.put("http://10.0.2.2:8080/customers/" + userData.getCustomerId(), updatedCustomer, putParams);
+        restTemplate.put("http://10.0.2.2:8080/customers/" + userCustomerData.getCustomerId(), updatedCustomer, putParams);
     }
 }
