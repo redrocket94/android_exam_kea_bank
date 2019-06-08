@@ -39,4 +39,7 @@ dependencies {
     implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+    // https://mvnrepository.com/artifact/joda-time/joda-time
+    implementation group: 'joda-time', name: 'joda-time', version: '2.10.2'
+
 }

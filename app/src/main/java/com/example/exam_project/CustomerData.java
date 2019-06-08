@@ -21,6 +21,7 @@ public class CustomerData {
     private String bank;
 
     private List<Account> accounts;
+    private List<Bill> bills;
 
 
     public List<Account> getAccounts() {
@@ -101,5 +102,13 @@ public class CustomerData {
 
     public void addAccount(Account accountToAdd) {
         this.accounts.add(accountToAdd);
+    }
+
+    public List<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
     }
 }

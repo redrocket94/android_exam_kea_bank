@@ -34,6 +34,20 @@ public class Customer implements Parcelable {
     private String email;
     private Bank bank;
     private List<Account> accounts;
+    private List<Bill> bills;
+
+    public Customer(Long customerId, String firstName, String lastName, int age, String username, String password, String email, Bank bank, List<Account> accounts, List<Bill> bills) {
+        this.customerId = customerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.bank = bank;
+        this.accounts = accounts;
+        this.bills = bills;
+    }
 
     public Customer(String username, String password, String email, String firstName, String lastName, int age, List<Account> accounts) {
         this.username = username;
@@ -229,4 +243,11 @@ public class Customer implements Parcelable {
         ODENSE
     }
 
+    public List<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
+    }
 }

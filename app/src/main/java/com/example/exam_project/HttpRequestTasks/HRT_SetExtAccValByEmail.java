@@ -79,7 +79,7 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, CustomerData>
         }
 
         Customer updatedCustomerReceiver = new Customer(receiverCustomerData.getCustomerId(), receiverCustomerData.getFirstName(), receiverCustomerData.getLastName(), receiverCustomerData.getAge(), receiverCustomerData.getUsername(),
-                receiverCustomerData.getPassword(), receiverCustomerData.getEmail(), Customer.Bank.valueOf(receiverCustomerData.getBank()), receiverCustomerData.getAccounts());
+                receiverCustomerData.getPassword(), receiverCustomerData.getEmail(), Customer.Bank.valueOf(receiverCustomerData.getBank()), receiverCustomerData.getAccounts(), receiverCustomerData.getBills());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -97,7 +97,7 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, CustomerData>
         }
 
         Customer updatedCustomerSender = new Customer(senderData.getCustomerId(), senderData.getFirstName(), senderData.getLastName(), senderData.getAge(), senderData.getUsername(),
-                senderData.getPassword(), senderData.getEmail(), senderData.getBank(), senderData.getAccounts());
+                senderData.getPassword(), senderData.getEmail(), senderData.getBank(), senderData.getAccounts(), senderData.getBills());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -108,5 +108,6 @@ public class HRT_SetExtAccValByEmail extends AsyncTask<Void, Void, CustomerData>
         new HRT_PostTransaction(value, getUserData().getCustomerId(), senderData.getCustomerId(), sendingAccount.getAccountType()).execute();
 
     }
+
 
 }

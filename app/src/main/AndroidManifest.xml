@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Dialogs.NewAccDialog"></activity>
+        <activity android:name=".Activities.BillViewActivity"></activity>
+        <activity android:name=".Activities.BillsActivity" />
+        <activity android:name=".Dialogs.NewAccDialog" />
         <activity android:name=".Activities.PassChangeActivity" />
         <activity android:name=".Activities.TransactionsActivity" />
         <activity android:name=".Activities.AccountViewActivity" />

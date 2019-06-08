@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.exam_project.Activities.BillsActivity;
 import com.example.exam_project.Activities.MainActivity;
 import com.example.exam_project.Activities.PassChangeActivity;
 import com.example.exam_project.Activities.TransactionsActivity;
@@ -41,6 +42,11 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
                 transactionsActivity.putExtra("customerId", customerId);
                 activity.startActivity(transactionsActivity);
                 break;
+            case "Bills":
+                Intent billsActivity = new Intent(activity, BillsActivity.class);
+                billsActivity.putExtra("customerId", customerId);
+                activity.startActivity(billsActivity);
+                break;
             case "Change Password":
                 Intent passChangeActivity = new Intent(activity, PassChangeActivity.class);
                 passChangeActivity.putExtra("customerId", customerId);
@@ -65,6 +71,7 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
         Spinner info_spinner = activity.findViewById(R.id.info_spinner);
         List<String> list = new ArrayList<String>();
         list.add("Transactions");
+        list.add("Bills");
         list.add("Change Password");
         list.add("Log Out");
         list.add("[More]");

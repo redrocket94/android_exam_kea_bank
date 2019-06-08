@@ -35,6 +35,7 @@ public class AccountViewActivity extends AppCompatActivity {
     Long customerId;
     Button withdraw_btn;
     Button deposit_btn;
+    Button deposit_external_btn;
 
     CustomerData customerData;
 
@@ -61,9 +62,14 @@ public class AccountViewActivity extends AppCompatActivity {
 
         withdraw_btn = findViewById(R.id.withdraw_btn);
         deposit_btn = findViewById(R.id.deposit_btn);
+        deposit_external_btn = findViewById(R.id.deposit_external_btn);
 
         // If account type is NOT Pension, hide Withdraw button OR if account is default (cant withdraw from default account to nothing)
-        if ((account.getAccountType() == Account.AccountType.PENSION && customer.getAge() < 77) || (account.getAccountType() == Account.AccountType.DEFAULT)) {
+        if ((account.getAccountType() == Account.AccountType.PENSION && customer.getAge() < 77)) {
+            withdraw_btn.setVisibility(View.INVISIBLE);
+            deposit_btn.setVisibility(View.INVISIBLE);
+            deposit_external_btn.setVisibility(View.INVISIBLE);
+        } else if (account.getAccountType() == Account.AccountType.DEFAULT) {
             withdraw_btn.setVisibility(View.INVISIBLE);
         }
 

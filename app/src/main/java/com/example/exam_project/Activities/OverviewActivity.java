@@ -15,13 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.exam_project.Account;
+import com.example.exam_project.Bill;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
+import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
+import com.example.exam_project.HttpRequestTasks.HRT_UpdateBill;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
 import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
+
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,58 +76,15 @@ public class OverviewActivity extends AppCompatActivity {
             welcomeText.setText("Welcome " + customer.getFirstName() + "!");
         }
 
+        // Load all customers accounts for activity
         loadAccounts();
 
         if (customer.getAccounts().size() == 0) {
             Toast.makeText(this, "No accounts, contact administration!", Toast.LENGTH_SHORT);
         }
 
-
-        // Couldn't be made own class due to time restrictions and errors parsing customerData
-        newAcc_btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                // Checks if user already has all accounts possible and returns, before a dialog can be built
-                List<String> list = addNewAccounts(customer);
-                if (list.size() == 0) {
-                    Toast.makeText(OverviewActivity.this, "Sorry, you already have all possible accounts!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.new_acc_dialog, null);
-                builder.setTitle("Opening a new account...");
-                final Spinner accTypeSpinner = mView.findViewById(R.id.new_acc_spinner);
-
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(OverviewActivity.this, android.R.layout.simple_spinner_item, list);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                accTypeSpinner.setAdapter(adapter);
-
-                builder.setPositiveButton("Open account", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String selection = accTypeSpinner.getSelectedItem().toString();
-
-                        new HRT_UpdateUserAccountsById(customerId, selection).execute();
-
-                        // Refreshing page to display new account
-                        finish();
-                        startActivity(getIntent());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                builder.setView(mView);
-                builder.show();
-            }
-
-        });
+        // Pay any automatic bills
+        payBillsAuto();
 
     }
 
@@ -191,6 +153,82 @@ public class OverviewActivity extends AppCompatActivity {
 
         }
         return list;
+    }
+
+    public void createNewAcc(View v) {
+        super.onStart();
+        // Checks if user already has all accounts possible and returns, before a dialog can be built
+        List<String> list = addNewAccounts(customer);
+        if (list.size() == 0) {
+            Toast.makeText(OverviewActivity.this, "Sorry, you already have all possible accounts!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.new_acc_dialog, null);
+        builder.setTitle("Opening a new account...");
+        final Spinner accTypeSpinner = mView.findViewById(R.id.new_acc_spinner);
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(OverviewActivity.this, android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accTypeSpinner.setAdapter(adapter);
+
+        builder.setPositiveButton("Open account", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String selection = accTypeSpinner.getSelectedItem().toString();
+
+                new HRT_UpdateUserAccountsById(customerId, selection).execute();
+
+                // Refreshing page to display new account
+                finish();
+                startActivity(getIntent());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setView(mView);
+        builder.show();
+    }
+
+    private void payBillsAuto() {
+
+        List<Bill> billList = customer.getBills();
+        Account defaultAccount = getUserDefaultAcc(customer);
+
+        for (Bill bill : billList) {
+            if (bill.getLocalDate().equals(new LocalDate())) {
+                payBill(bill, defaultAccount);
+            }
+        }
+
+    }
+
+    Account getUserDefaultAcc(Customer currCustomer) {
+        for (Account account : currCustomer.getAccounts()) {
+            if (account.getAccountType() == Account.AccountType.DEFAULT) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+    void payBill(Bill bill, Account defaultAccount) {
+
+        if (bill.isAutoPay() && !bill.isPaid() && bill.getValue() <= defaultAccount.getAmount()) {
+            new HRT_UpdateBill(bill.getId(), customerId, true).execute();
+            new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer).execute();
+            Toast.makeText(this, "Made an AUTOMATIC payment to user of email: " + bill.getBillCollectorEmail(), Toast.LENGTH_SHORT).show();
+        } else if (bill.getValue() <= defaultAccount.getAmount()) {
+            Toast.makeText(this, "Your funds in the DEFAULT account are too low!", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
 }

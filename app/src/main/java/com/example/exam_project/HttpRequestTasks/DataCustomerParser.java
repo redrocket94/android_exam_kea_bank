@@ -12,7 +12,7 @@ public class DataCustomerParser {
         if (customerData != null) {
             Customer customer = new Customer(customerData.getCustomerId(), customerData.getFirstName(), customerData.getLastName(),
                     customerData.getAge(), customerData.getUsername(), customerData.getPassword(), customerData.getEmail(),
-                    Customer.Bank.valueOf(customerData.getBank()), customerData.getAccounts());
+                    Customer.Bank.valueOf(customerData.getBank()), customerData.getAccounts(), customerData.getBills());
 
             return customer;
         }
