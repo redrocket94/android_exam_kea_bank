@@ -21,7 +21,6 @@ import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateBill;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
 import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
@@ -203,7 +202,7 @@ public class OverviewActivity extends AppCompatActivity {
         Account defaultAccount = getUserDefaultAcc(customer);
 
         for (Bill bill : billList) {
-            if (bill.getLocalDate().equals(new LocalDate())) {
+            if (bill.getLocalDate().equals(new LocalDate()) && bill.isAutoPay()) {
                 payBill(bill, defaultAccount);
             }
         }
@@ -220,13 +219,12 @@ public class OverviewActivity extends AppCompatActivity {
     }
 
     void payBill(Bill bill, Account defaultAccount) {
-
+        
         if (bill.isAutoPay() && !bill.isPaid() && bill.getValue() <= defaultAccount.getAmount()) {
-            new HRT_UpdateBill(bill.getId(), customerId, true).execute();
-            new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer).execute();
-            Toast.makeText(this, "Made an AUTOMATIC payment to user of email: " + bill.getBillCollectorEmail(), Toast.LENGTH_SHORT).show();
-        } else if (bill.getValue() <= defaultAccount.getAmount()) {
-            Toast.makeText(this, "Your funds in the DEFAULT account are too low!", Toast.LENGTH_SHORT).show();
+            new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
+            Toast.makeText(this, "Made an AUTOMATIC payment of: " + bill.getValue() + " to user of email: " + bill.getBillCollectorEmail(), Toast.LENGTH_SHORT).show();
+        } else if (bill.getValue() > defaultAccount.getAmount()) {
+            Toast.makeText(this, "Tried to make an AUTOMATIC payment on bill, but funds in DEFAULT account too low!", Toast.LENGTH_SHORT).show();
             return;
         }
     }

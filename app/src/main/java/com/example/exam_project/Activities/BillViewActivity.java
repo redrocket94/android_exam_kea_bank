@@ -17,7 +17,6 @@ import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateBill;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
@@ -100,7 +99,7 @@ public class BillViewActivity extends AppCompatActivity {
 
     public void onClickBack(View v) {
         super.onStart();
-        startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
+        startActivity(new Intent(this, BillsActivity.class).putExtra("customerId", customerId));
     }
 
 
@@ -122,8 +121,7 @@ public class BillViewActivity extends AppCompatActivity {
                     Toast.makeText(BillViewActivity.this, "You don't have enough funds to pay this bill!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new HRT_UpdateBill(bill.getId(), customerId, true).execute();
-                new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer).execute();
+                new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
                 Toast.makeText(BillViewActivity.this, "Successfully paid bill!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(BillViewActivity.this, BillsActivity.class).putExtra("customerId", customerId));
 
