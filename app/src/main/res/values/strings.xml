@@ -1,8 +1,189 @@
+<!--
+    Naming conventions:
+    First bit before underscore describes activity name, eg: "main", "reg"
+    Second bit after first underscore describes the input/behavior expected, eg: "username", "register", "forgotpass"
+    Third and last bit after second underscore describes the type of component it is associated with, eg: "btn" (button), "link", "input" (EditText)
+    -->
+
 <resources>
+    <!-- Strings for actionbar -->
     <string name="app_name">KEA Bank</string>
+
+    <!-- Strings for AccountType Spinner -->
     <string-array name="accountTypes">
         <item>Business</item>
         <item>Pension</item>
         <item>Savings</item>
     </string-array>
+
+    <string-array name="infospinner_items">
+        <item>Transactions</item>
+        <item>Bills</item>
+        <item>Change Password</item>
+        <item>Logout</item>
+        <item>[More]</item>
+    </string-array>
+
+
+    <!-- Strings for MainActivity -->
+    <string name="main_username_input">Username...</string>
+    <string name="main_password_input">Password...</string>
+    <string name="main_rememberme_box">Remember Me</string>
+    <string name="main_forgotpass_link">Forgot your password?</string>
+    <string name="main_login_btn">Login</string>
+    <string name="main_register_btn">Register</string>
+
+    <!-- Strings for RegisterActivity -->
+    <string name="reg_username_input">Username...</string>
+    <string name="reg_password_input">Password...</string>
+    <string name="reg_password_verify_input">Password confirmation...</string>
+    <string name="reg_email_input">Email...</string>
+    <string name="reg_firstname_input">First name...</string>
+    <string name="reg_lastname_input">Last name...</string>
+    <string name="reg_age_input">Age...</string>
+    <string name="reg_register_btn">Register</string>
+    <string name="reg_returnlogin_btn">Return To Login</string>
+    <!-- Internal strings for RegisterActivity -->
+    <string name="reg_msg01_toast">You need to fill out all fields! Try again.</string>
+    <string name="reg_msg02_toast">You\'re the oldest person alive! Wow!</string>
+    <string name="reg_msg03_toast">You\'re too young to register for a bank account!</string>
+    <string name="reg_msg04_toast">Invalid username, either too short or too long! Try again.</string>
+    <string name="reg_msg05_toast">Password too short or too long! Try again.</string>
+    <string name="reg_msg06_toast">Your password needs to match the password in password confirmation field! Try again.</string>
+    <string name="reg_msg07_toast">You need to input a valid email address! Try again.</string>
+    <string name="reg_msg_08_toast">You need to input a valid email!</string>
+
+    <!-- Strings for OverviewActivity -->
+    <string name="overview_welcome_txt">Welcome</string>
+    <string name="overview_newacc_btn">Open a New Account</string>
+    <!-- Internal strings for OverviewActivity -->
+    <string name="overview_msg01_toast">There was an error retrieving your account customerData, please log in again.</string>
+    <string name="overview_msg02_toast">No accounts, contact administration!</string>
+    <string name="overview_msg03partial01_toast">Made an AUTOMATIC payment of:</string>
+    <string name="overview_msg03partial02_toast">to user of email:</string>
+    <string name="overview_msg04_toast">Tried to make an AUTOMATIC payment on bill, but funds in DEFAULT account too low!</string>
+
+    <!-- Strings for AccountViewActivity -->
+    <string name="accountview_accounttype_txt">Account</string>
+    <string name="accountview_amount_input">Amount:</string>
+    <string name="accountview_intdeposit_btn">Deposit to Own Accounts</string>
+    <string name="accountview_extdeposit_btn">Deposit to External User Account</string>
+    <string name="accountview_defwithdraw_btn">Withdraw to Default Account</string>
+    <string name="accountview_returnoverview_btn">Return to Overview</string>
+    <!-- Internal strings for AccountViewActivity -->
+    <!-- Dialog strings for internal deposits in AccountViewActivity -->
+    <string name="intdepositdia_titlepartial01_txt">Making deposit from: </string>
+    <string name="intdepositdia_titlepartial02_txt"> account</string>
+    <string name="intdepositdia_positive_btn">Deposit</string>
+    <string name="intdepositdia_negative_btn">Cancel</string>
+    <string name="intdepositdia_msg01_toast">You cannot deposit more money than you have on your account!</string>
+    <string name="intdepositdia_msg02_toast">You need to deposit more than 0.5!</string>
+    <string name="intdepositdia_msg03_toast">Successfully sent transaction to internal account!</string>
+    <!-- Dialog strings for withdrawing to default account in AccountViewActivity -->
+    <string name="withdrawdialog_titlepartial01_txt">Withdrawing from: </string>
+    <string name="withdrawdialog_positive_btn">Withdraw</string>
+    <string name="withdrawdialog_msg01_toast">You cannot withdraw more money than you have on your account!</string>
+    <string name="withdrawdialog_negative_btn">Cancel</string>
+    <!-- Dialog strings for depositing to external user account in AccountViewActivity -->
+    <string name="extdepositdia_titlepartial01_txt">Sending from account: </string>
+    <string name="extdepositdia_positive_btn">Make transaction</string>
+    <string name="extdepositdia_msg01_toast">You cannot send more money than you have on your account!</string>
+    <string name="extdepositdia_negative_btn">Cancel</string>
+    <!-- Dialog for NemID in AccountViewActivity -->
+    <string name="nemiddia_title_txt">Awaiting NemID verification...</string>
+    <string name="nemiddia_positive_btn">Verify</string>
+    <string name="nemiddia_msg01_toast">Successfully verified and sent transaction!</string>
+    <string name="nemiddia_msg02_toast">Wrong NemID input! Retry the transaction process.</string>
+    <string name="nemiddia_negative_btn">Cancel</string>
+
+
+    <!-- Strings for BillsActivity -->
+    <string name="bills_title_txt">Bills &amp; Pre-Approved Payments</string>
+    <string name="bills_returnoverview_btn">Return to Overview</string>
+    <!-- Internal strings for BillsActivity -->
+    <string name="bills_msg01_toast">There was an error retrieving your account customerData, please log in again.</string>
+    <string name="bills_btntxt_btn">See details</string>
+
+
+    <!-- Strings for BillViewActivity -->
+    <string name="billview_title_txt">Bill from: </string>
+    <string name="billview_value_txt">Value: </string>
+    <string name="billview_activity_txt">Activity: </string>
+    <string name="billview_paydate_txt">Payment Date: </string>
+    <string name="billview_paystatus_txt">Payment Status: </string>
+    <string name="billview_paymethod_txt">Payment Method: </string>
+    <string name="billview_paymanually_btn">Pay Bill Manually</string>
+    <string name="billview_returnbillsview_btn">Return to Bills</string>
+    <!-- Internal strings for BillViewActivity -->
+    <string name="billview_active_txt">Active</string>
+    <string name="billview_inactive_txt">Inactive</string>
+    <string name="billview_paid_txt">Paid</string>
+    <string name="billview_unpaid_txt">Unpaid</string>
+    <string name="billview_automatic_txt">Automatic</string>
+    <string name="billview_manual_txt">Manual</string>
+    <!-- Internal strings for PayBillDialog in BillViewActivity -->
+    <string name="billviewdia_title_txt">Paying bill manually...</string>
+    <!-- Line of strings for single text -->
+    <string name="billviewdia_infopartial01_txt">To</string>
+    <string name="billviewdia_infopartial02_txt">If yes, hit</string>
+    <string name="billviewdia_infopartial03_txt">PAY BILL</string>
+    <string name="billviewdia_infopartial04_txt">If no, hit</string>
+    <string name="billviewdia_infopartial05_txt">CANCEL</string>
+    <string name="billviewdia_positive_btn">Pay bill</string>
+    <string name="billviewdia_msg01_toast">You don\'t have enough funds to pay this bill!</string>
+    <string name="billviewdia_negative_btn">Cancel</string>
+    <!-- Internal strings for NemID dialog -->
+    <string name="nemiddia_success_toast">Successfully paid bill!</string>
+
+
+    <!-- Strings for PassChangeActivity -->
+    <string name="passch_title_txt">Change Password</string>
+    <string name="passch_info_txt">Input your current password and new password to change it!</string>
+    <string name="passch_currpass_input">Current password...</string>
+    <string name="passch_newpass_input">New password...</string>
+    <string name="passch_newpassverify_input">Confirm new password...</string>
+    <string name="passch_cancel_btn">Cancel</string>
+    <string name="passch_submit_btn">Submit</string>
+    <!-- Internal strings for PassChangeActivity -->
+    <string name="passch_msg01_toast">Successfully changed password!</string>
+    <string name="passch_msg02_toast">Your password input does NOT match your current password! Please try again.</string>
+    <string name="passch_msg03_toast">Your new password does NOT match your the new password confirmation! Please try again.</string>
+    <string name="passch_msg04_toast">Your password is too short! Please try again.</string>
+
+    <!-- Strings for ForgotPassDialog -->
+    <string name="forgotpass_title_txt">Forgot Password</string>
+    <string name="forgotpass_info_txt">Input your email below to receive a new password.</string>
+    <string name="forgotpass_email_input">Email...</string>
+    <!-- Internal strings for ForgotPassDialog -->
+    <string name="forgotpass_positive_btn">Reset Password</string>
+    <string name="forgotpass_negative_btn">Cancel</string>
+    <string name="forgotpass_msg01_toast">You need to fill out the form or cancel!</string>
+
+    <!-- Strings for TransactionsActivity -->
+    <string name="transactions_title_txt">Transaction History</string>
+    <string name="transactions_returnoverview_btn">Return to Overview</string>
+    <!-- Internal strings for TransactionsActivity -->
+    <string name="transactions_msg01_toast">There was an error retrieving your account customerData, please log in again.</string>
+
+    <!-- Strings for DepositDialog -->
+    <string name="depositdialog_amount_input">Amount to deposit...</string>
+
+    <!-- Strings for NemIDDialog -->
+    <string name="nemid_info_txt">A NemID has been sent to the email associated with this account, please input it in the field below to finish the transaction or press cancel to stop it completely.</string>
+    <string name="nemid_verifynum_input">Verification number...</string>
+
+    <!-- Strings for PayBillDialog -->
+    <string name="paybilldialog_info_txt">Are you sure you want to pay: </string>
+
+    <!-- Strings for UserDepositDialog -->
+    <string name="userdepositdia_email_input">Email of receiving user...</string>
+    <string name="userdepositdia_amount_input">Amount to send...</string>
+
+    <!-- Strings for WithdrawDialog -->
+    <string name="withdrawdia_amount_input">Amount to withdraw...</string>
+
+    <!-- Strings for InfoSpinner -->
+    <string name="infospinner_msg01_toast">Successfully logged out!</string>
+
+
 </resources>

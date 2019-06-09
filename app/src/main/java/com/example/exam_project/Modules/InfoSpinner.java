@@ -16,9 +16,6 @@ import com.example.exam_project.Activities.PassChangeActivity;
 import com.example.exam_project.Activities.TransactionsActivity;
 import com.example.exam_project.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Activity activity;
@@ -34,27 +31,29 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selection = parent.getItemAtPosition(position).toString();
 
-        switch (selection) {
-            case "Transactions":
+        switch (position) {
+            // Transactions
+            case 0:
                 Intent transactionsActivity = new Intent(activity, TransactionsActivity.class);
                 transactionsActivity.putExtra("customerId", customerId);
                 activity.startActivity(transactionsActivity);
                 break;
-            case "Bills":
+            // Bills
+            case 1:
                 Intent billsActivity = new Intent(activity, BillsActivity.class);
                 billsActivity.putExtra("customerId", customerId);
                 activity.startActivity(billsActivity);
                 break;
-            case "Change Password":
+            // Change Password
+            case 2:
                 Intent passChangeActivity = new Intent(activity, PassChangeActivity.class);
                 passChangeActivity.putExtra("customerId", customerId);
                 activity.startActivity(passChangeActivity);
                 break;
-
-            case "Log Out":
-                Toast.makeText(activity, "Successfully logged out!", Toast.LENGTH_SHORT).show();
+            // Log out
+            case 3:
+                Toast.makeText(activity, getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
                 activity.startActivity(new Intent(activity, MainActivity.class));
                 break;
         }
@@ -69,13 +68,8 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
     public void connectSpinner() {
         // Creating spinner
         Spinner info_spinner = activity.findViewById(R.id.info_spinner);
-        List<String> list = new ArrayList<String>();
-        list.add("Transactions");
-        list.add("Bills");
-        list.add("Change Password");
-        list.add("Log Out");
-        list.add("[More]");
-        final int listsize = list.size() - 1;
+        String[] list = activity.getResources().getStringArray(R.array.infospinner_items);
+        final int listsize = list.length - 1;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list) {
             @Override
             public int getCount() {

@@ -110,27 +110,27 @@ public class RegisterActivity extends AppCompatActivity {
 
         for (EditText input : regInputList) {
             if (input.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(), "You need to fill out all fields! Try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.reg_msg01_toast), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
         if (Integer.parseInt(reg_age.getText().toString()) > 125) {
-            Toast.makeText(getApplicationContext(), "You're the oldest person alive! Wow!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg02_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (Integer.parseInt(reg_age.getText().toString()) < 18) {
-            Toast.makeText(getApplicationContext(), "You're too young to register for a bank account!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg03_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (reg_username.getText().toString().length() < 8 || reg_username.getText().toString().length() > 16) {
-            Toast.makeText(getApplicationContext(), "Invalid username, either too short or too long! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg04_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (reg_password.getText().toString().length() < 8 || reg_password.getText().toString().length() > 16) {
-            Toast.makeText(getApplicationContext(), "Password too short or too long! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg05_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (!reg_password.getText().toString().toLowerCase().equals(reg_password_verify.getText().toString().toLowerCase())) {
-            Toast.makeText(getApplicationContext(), "Your password needs to match the password in password confirmation field! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg06_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (!isEmailVerified(reg_email.getText().toString())) {
-            Toast.makeText(getApplicationContext(), "You need to input a valid email address! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.reg_msg07_toast), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -152,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
             emailAddr.validate();
 
         } catch (Exception e) {
-            Toast.makeText(RegisterActivity.this, "You need to input a valid email!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, getString(R.string.reg_msg_08_toast), Toast.LENGTH_SHORT).show();
             return false;
         }
 

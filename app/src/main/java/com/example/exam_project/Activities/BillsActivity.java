@@ -15,6 +15,7 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
 public class BillsActivity extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class BillsActivity extends AppCompatActivity {
 
         // If customerId is 0, return to loginactivity
         if (customerId == 0) {
-            Toast.makeText(this, "There was an error retrieving your account customerData, please log in again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.bills_msg01_toast), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
 
@@ -50,6 +51,9 @@ public class BillsActivity extends AppCompatActivity {
         if (customer.getBills() != null) {
             loadBills();
         }
+
+        // Connect Spinner in View to its functionality
+        new InfoSpinner(this, BillsActivity.this, customerId).connectSpinner();
 
     }
 
@@ -69,7 +73,7 @@ public class BillsActivity extends AppCompatActivity {
             table.addView(accountType);
 
             Button button = new Button(this);
-            button.setText("See details");
+            button.setText(getString(R.string.bills_btntxt_btn));
 
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {

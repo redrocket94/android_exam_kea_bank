@@ -13,6 +13,7 @@ import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserByEmail;
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
 public class PassChangeActivity extends AppCompatActivity {
@@ -52,6 +53,9 @@ public class PassChangeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        // Connect Spinner in View to its functionality
+        new InfoSpinner(this, PassChangeActivity.this, customerId).connectSpinner();
     }
 
 
@@ -59,7 +63,7 @@ public class PassChangeActivity extends AppCompatActivity {
         String passToSend = passwordVerifier();
         if (passToSend != null) {
             new HRT_UpdateUserByEmail(customer.getEmail(), passToSend).execute();
-            Toast.makeText(this, "Successfully changed password!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.passch_msg01_toast), Toast.LENGTH_SHORT).show();
 
             startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
         }
@@ -79,13 +83,13 @@ public class PassChangeActivity extends AppCompatActivity {
 
         // Check if inputs are valid
         if (!curr_pass.equals(customer.getPassword())) {
-            Toast.makeText(this, "Your password input does NOT match your current password! Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.passch_msg02_toast), Toast.LENGTH_SHORT).show();
             return null;
         } else if (!new_pass.equals(new_pass_verify)) {
-            Toast.makeText(this, "Your new password does NOT match your the new password confirmation! Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.passch_msg03_toast), Toast.LENGTH_SHORT).show();
             return null;
         } else if (new_pass.length() < 8) {
-            Toast.makeText(this, "Your password is too short! Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.passch_msg04_toast), Toast.LENGTH_SHORT).show();
             return null;
         }
 

@@ -10,6 +10,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 import com.example.exam_project.Transaction;
 
@@ -31,11 +32,11 @@ public class TransactionsActivity extends AppCompatActivity {
         transactionList = getTransactionsList(customerId);
 
         // Connect Spinner in View to its functionality
-        //new InfoSpinner(this, TransactionsActivity.this, customerId).connectSpinner();
+        new InfoSpinner(this, TransactionsActivity.this, customerId).connectSpinner();
 
         // If customerId is 0, return to loginactivity
         if (customerId == 0) {
-            Toast.makeText(this, "There was an error retrieving your account customerData, please log in again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.transactions_msg01_toast), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
 

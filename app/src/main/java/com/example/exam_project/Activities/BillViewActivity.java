@@ -19,6 +19,7 @@ import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
 import com.example.exam_project.MailHandler.SendMail;
+import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
@@ -55,7 +56,7 @@ public class BillViewActivity extends AppCompatActivity {
         }
 
         // Connect Spinner in View to its functionality
-        //new InfoSpinner(this, getApplicationContext(), customerId).connectSpinner();
+        new InfoSpinner(this, BillViewActivity.this, customerId).connectSpinner();
 
         // Change header text to show type of account
         TextView bill_welcome_txt = findViewById(R.id.bill_welcome_txt);
@@ -70,9 +71,9 @@ public class BillViewActivity extends AppCompatActivity {
         // Get & SetText Bill activity
         TextView bill_activity_txt = findViewById(R.id.bill_activity_txt);
         if (bill.isActive()) {
-            bill_activity_txt.setText(bill_activity_txt.getText().toString() + "Active");
+            bill_activity_txt.setText(bill_activity_txt.getText().toString() + getString(R.string.billview_active_txt));
         } else {
-            bill_activity_txt.setText(bill_activity_txt.getText().toString() + "Inactive");
+            bill_activity_txt.setText(bill_activity_txt.getText().toString() + getString(R.string.billview_inactive_txt));
         }
 
         // Get & SetText Bill Date
@@ -83,17 +84,17 @@ public class BillViewActivity extends AppCompatActivity {
         // Get paid status
         TextView bill_isPaid_txt = findViewById(R.id.bill_isPaid_txt);
         if (bill.isPaid()) {
-            bill_isPaid_txt.setText(bill_isPaid_txt.getText().toString() + "Paid");
+            bill_isPaid_txt.setText(bill_isPaid_txt.getText().toString() + getString(R.string.billview_paid_txt));
         } else {
-            bill_isPaid_txt.setText(bill_isPaid_txt.getText().toString() + "Unpaid");
+            bill_isPaid_txt.setText(bill_isPaid_txt.getText().toString() + getString(R.string.billview_unpaid_txt));
         }
 
         // Gets autopay status
         TextView bill_autopay_txt = findViewById(R.id.bill_autopay_txt);
         if (bill.isAutoPay()) {
-            bill_autopay_txt.setText(bill_autopay_txt.getText().toString() + "Automatic");
+            bill_autopay_txt.setText(bill_autopay_txt.getText().toString() + getString(R.string.billview_automatic_txt));
         } else {
-            bill_autopay_txt.setText(bill_autopay_txt.getText().toString() + "Manual");
+            bill_autopay_txt.setText(bill_autopay_txt.getText().toString() + getString(R.string.billview_manual_txt));
         }
 
         // Hides manual bill pay button if status is set to auto
@@ -114,17 +115,19 @@ public class BillViewActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(BillViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.pay_bill_dialog, null);
 
-        builder.setTitle("Paying bill manually...");
+        builder.setTitle(getString(R.string.billviewdia_title_txt));
 
         TextView dialog_pay_txt = mView.findViewById(R.id.dialog_pay_txt);
-        dialog_pay_txt.setText(dialog_pay_txt.getText().toString() + bill.getValue() + "\nTo\t\t" + bill.getBillCollectorEmail() + "?\n\n If yes, hit \"PAY BILL\"\n If no, hit \"CANCEL\"");
+        dialog_pay_txt.setText(dialog_pay_txt.getText().toString() + bill.getValue() + "\n" + getString(R.string.billviewdia_infopartial01_txt) +
+                "\t\t" + bill.getBillCollectorEmail() + "\n\n " + getString(R.string.billviewdia_infopartial02_txt) + " " +
+                getString(R.string.billviewdia_infopartial03_txt) + "\n " + getString(R.string.billviewdia_infopartial04_txt) + " " + getString(R.string.billviewdia_infopartial05_txt));
 
-        builder.setPositiveButton("Pay bill", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.billviewdia_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 defaultAccount = getUserDefaultAcc(customer);
                 if (defaultAccount.getAmount() < bill.getValue()) {
-                    Toast.makeText(BillViewActivity.this, "You don't have enough funds to pay this bill!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BillViewActivity.this, getString(R.string.billviewdia_msg01_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 generatedValue = new NemID().getRandomValue();
@@ -133,7 +136,7 @@ public class BillViewActivity extends AppCompatActivity {
                 NemIDDialog();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.billviewdia_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -156,11 +159,11 @@ public class BillViewActivity extends AppCompatActivity {
     void NemIDDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(BillViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
-        builder.setTitle("Awaiting NemID verification...");
+        builder.setTitle(getString(R.string.nemiddia_title_txt));
 
         final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
 
-        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.nemiddia_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
@@ -169,14 +172,14 @@ public class BillViewActivity extends AppCompatActivity {
                 if (nemIdNumber == generatedValue) {
                     new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
                     startActivity(new Intent(BillViewActivity.this, BillsActivity.class).putExtra("customerId", customerId));
-                    Toast.makeText(BillViewActivity.this, "Successfully paid bill!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BillViewActivity.this, getString(R.string.nemiddia_success_toast), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(BillViewActivity.this, "Wrong NemID input! Retry the transaction process.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BillViewActivity.this, getString(R.string.nemiddia_msg02_toast), Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.nemiddia_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

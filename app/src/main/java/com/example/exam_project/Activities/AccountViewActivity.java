@@ -27,6 +27,7 @@ import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -97,7 +98,7 @@ public class AccountViewActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.deposit_dialog, null);
-                builder.setTitle("Making deposit from: " + account.getAccountType().toString() + " account");
+                builder.setTitle(getString(R.string.intdepositdia_titlepartial01_txt) + account.getAccountType().toString() + getString(R.string.intdepositdia_titlepartial02_txt));
 
                 accTypeSpinner = mView.findViewById(R.id.internal_accs_spinner);
                 final EditText amountToDeposit_input = mView.findViewById(R.id.amount_to_deposit);
@@ -107,36 +108,36 @@ public class AccountViewActivity extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 accTypeSpinner.setAdapter(adapter);
 
-                builder.setPositiveButton("Deposit", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.intdepositdia_positive_btn), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         amountToDeposit = Double.parseDouble(amountToDeposit_input.getText().toString());
                         
                         // Make sure there's enough money to transfer by getting current amount of money on account
                         if (amountToDeposit > account.getAmount()) {
-                            Toast.makeText(AccountViewActivity.this, "You cannot deposit more money than you have on your account!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg01_toast), Toast.LENGTH_SHORT).show();
                             return;
                         } else if (amountToDeposit < 0.5) {
-                            Toast.makeText(AccountViewActivity.this, "You need to deposit more than 0.5!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg02_toast), Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         // If PENSION type, get NemID verification
-                        if (accTypeSpinner.getSelectedItem().toString().equals("PENSION")) {
+                        if (accTypeSpinner.getSelectedItemId() == Arrays.asList(getResources().getStringArray(R.array.accountTypes)).indexOf("PENSION")) {
                             generatedValue = new NemID().getRandomValue();
                             SendMail sendMail = new SendMail(AccountViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
                             sendMail.execute();
                             NemIDDialog("int");
                         } else {
                             new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
-                            Toast.makeText(AccountViewActivity.this, "Successfully sent transaction to internal account!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg03_toast), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
                         }
 
 
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.intdepositdia_negative_btn), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -171,18 +172,18 @@ public class AccountViewActivity extends AppCompatActivity {
         super.onStart();
         AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.withdraw_dialog, null);
-        builder.setTitle("Withdrawing from: " + account.getAccountType().toString());
+        builder.setTitle(getString(R.string.withdrawdialog_titlepartial01_txt) + account.getAccountType().toString());
 
         final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
 
-        builder.setPositiveButton("Withdraw", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.withdrawdialog_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 double amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
 
                 // Make sure there's enough money to transfer by getting current amount of money on account
                 if (amountToWithdraw > account.getAmount()) {
-                    Toast.makeText(AccountViewActivity.this, "You cannot withdraw more money than you have on your account!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountViewActivity.this, getString(R.string.withdrawdialog_msg01_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.DEFAULT, amountToWithdraw).execute();
@@ -190,7 +191,7 @@ public class AccountViewActivity extends AppCompatActivity {
 
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.withdrawdialog_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -205,12 +206,12 @@ public class AccountViewActivity extends AppCompatActivity {
         super.onStart();
         AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.user_deposit_dialog, null);
-        builder.setTitle("Sending from account: " + account.getAccountType().toString());
+        builder.setTitle(getString(R.string.extdepositdia_titlepartial01_txt) + account.getAccountType().toString());
 
         final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
         final EditText email_input = mView.findViewById(R.id.email_input);
 
-        builder.setPositiveButton("Make transaction", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.extdepositdia_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
@@ -218,7 +219,7 @@ public class AccountViewActivity extends AppCompatActivity {
 
                 // Make sure there's enough money to transfer by getting current amount of money on account
                 if (amountToWithdraw > account.getAmount()) {
-                    Toast.makeText(AccountViewActivity.this, "You cannot send more money than you have on your account!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountViewActivity.this, getString(R.string.extdepositdia_msg01_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 generatedValue = new NemID().getRandomValue();
@@ -228,7 +229,7 @@ public class AccountViewActivity extends AppCompatActivity {
 
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.extdepositdia_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -242,11 +243,11 @@ public class AccountViewActivity extends AppCompatActivity {
     void NemIDDialog(final String intOrExt) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
-        builder.setTitle("Awaiting NemID verification...");
+        builder.setTitle(getString(R.string.nemiddia_title_txt));
 
         final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
 
-        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.nemiddia_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
@@ -260,14 +261,14 @@ public class AccountViewActivity extends AppCompatActivity {
                         new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
                         startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
                     }
-                    Toast.makeText(AccountViewActivity.this, "Successfully verified and sent transaction!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountViewActivity.this, getString(R.string.nemiddia_msg01_toast), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(AccountViewActivity.this, "Wrong NemID input! Retry the transaction process.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountViewActivity.this, getString(R.string.nemiddia_msg02_toast), Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.nemiddia_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

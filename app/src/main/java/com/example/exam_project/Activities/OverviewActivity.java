@@ -63,23 +63,23 @@ public class OverviewActivity extends AppCompatActivity {
 
         // If customerId is 0, return to loginactivity
         if (customerId == 0) {
-            Toast.makeText(this, "There was an error retrieving your account customerData, please log in again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.overview_msg01_toast), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
 
-        // Set welcome text with users name
+        // Set welcome text to users name
         TextView welcomeText = findViewById(R.id.welcomeText);
         if (customer.getFirstName().length() > 6) {
-            welcomeText.setText("Welcome\n" + customer.getFirstName() + "!");
+            welcomeText.setText(welcomeText.getText().toString() + "\n" + customer.getFirstName() + "!");
         } else {
-            welcomeText.setText("Welcome " + customer.getFirstName() + "!");
+            welcomeText.setText(welcomeText.getText().toString() + customer.getFirstName() + "!");
         }
 
         // Load all customers accounts for activity
         loadAccounts();
 
         if (customer.getAccounts().size() == 0) {
-            Toast.makeText(this, "No accounts, contact administration!", Toast.LENGTH_SHORT);
+            Toast.makeText(this, getString(R.string.overview_msg02_toast), Toast.LENGTH_SHORT);
         }
 
         // Pay any automatic bills
@@ -219,12 +219,13 @@ public class OverviewActivity extends AppCompatActivity {
     }
 
     void payBill(Bill bill, Account defaultAccount) {
-        
+
         if (bill.isAutoPay() && !bill.isPaid() && bill.getValue() <= defaultAccount.getAmount()) {
             new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
-            Toast.makeText(this, "Made an AUTOMATIC payment of: " + bill.getValue() + " to user of email: " + bill.getBillCollectorEmail(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.overview_msg03partial01_toast) + " " + bill.getValue() + " " +
+                    getString(R.string.overview_msg03partial02_toast) + " " + bill.getBillCollectorEmail(), Toast.LENGTH_SHORT).show();
         } else if (bill.getValue() > defaultAccount.getAmount()) {
-            Toast.makeText(this, "Tried to make an AUTOMATIC payment on bill, but funds in DEFAULT account too low!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.overview_msg04_toast), Toast.LENGTH_SHORT).show();
             return;
         }
     }
