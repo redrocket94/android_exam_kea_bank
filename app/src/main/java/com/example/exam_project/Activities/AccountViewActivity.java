@@ -20,7 +20,9 @@ import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateInternalAccValue;
+import com.example.exam_project.MailHandler.SendMail;
 import com.example.exam_project.Modules.InfoSpinner;
+import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
@@ -36,6 +38,13 @@ public class AccountViewActivity extends AppCompatActivity {
     Button withdraw_btn;
     Button deposit_btn;
     Button deposit_external_btn;
+    EditText amountToWithdraw_input;
+    EditText email_input;
+    Spinner accTypeSpinner;
+
+    double amountToWithdraw;
+    int generatedValue;
+    double amountToDeposit;
 
     CustomerData customerData;
 
@@ -90,7 +99,7 @@ public class AccountViewActivity extends AppCompatActivity {
                 View mView = getLayoutInflater().inflate(R.layout.deposit_dialog, null);
                 builder.setTitle("Making deposit from: " + account.getAccountType().toString() + " account");
 
-                final Spinner accTypeSpinner = mView.findViewById(R.id.internal_accs_spinner);
+                accTypeSpinner = mView.findViewById(R.id.internal_accs_spinner);
                 final EditText amountToDeposit_input = mView.findViewById(R.id.amount_to_deposit);
 
 
@@ -101,7 +110,7 @@ public class AccountViewActivity extends AppCompatActivity {
                 builder.setPositiveButton("Deposit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        double amountToDeposit = Double.parseDouble(amountToDeposit_input.getText().toString());
+                        amountToDeposit = Double.parseDouble(amountToDeposit_input.getText().toString());
                         
                         // Make sure there's enough money to transfer by getting current amount of money on account
                         if (amountToDeposit > account.getAmount()) {
@@ -111,8 +120,19 @@ public class AccountViewActivity extends AppCompatActivity {
                             Toast.makeText(AccountViewActivity.this, "You need to deposit more than 0.5!", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
-                        startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+
+                        // If PENSION type, get NemID verification
+                        if (accTypeSpinner.getSelectedItem().toString().equals("PENSION")) {
+                            generatedValue = new NemID().getRandomValue();
+                            SendMail sendMail = new SendMail(AccountViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
+                            sendMail.execute();
+                            NemIDDialog("int");
+                        } else {
+                            new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
+                            Toast.makeText(AccountViewActivity.this, "Successfully sent transaction to internal account!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+                        }
+
 
                     }
                 });
@@ -193,7 +213,7 @@ public class AccountViewActivity extends AppCompatActivity {
         builder.setPositiveButton("Make transaction", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                double amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
+                amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
                 String email = email_input.getText().toString();
 
                 // Make sure there's enough money to transfer by getting current amount of money on account
@@ -201,8 +221,49 @@ public class AccountViewActivity extends AppCompatActivity {
                     Toast.makeText(AccountViewActivity.this, "You cannot send more money than you have on your account!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
-                startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+                generatedValue = new NemID().getRandomValue();
+                SendMail sendMail = new SendMail(AccountViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
+                sendMail.execute();
+                NemIDDialog("ext");
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setView(mView);
+        builder.show();
+    }
+
+    void NemIDDialog(final String intOrExt) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
+        builder.setTitle("Awaiting NemID verification...");
+
+        final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
+
+        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
+                String email = customer.getEmail();
+
+                if (nemIdNumber == generatedValue) {
+                    if (intOrExt.equals("ext")) {
+                        new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
+                        startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+                    } else if (intOrExt.equals("int")) {
+                        new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
+                        startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+                    }
+                    Toast.makeText(AccountViewActivity.this, "Successfully verified and sent transaction!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AccountViewActivity.this, "Wrong NemID input! Retry the transaction process.", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

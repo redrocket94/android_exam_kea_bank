@@ -37,11 +37,6 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         this.generatedValue = generatedValue;
     }
 
-    public SendMail(Context context, MailType mailType, String email) {
-        this.context = context;
-        this.mailType = mailType;
-        this.email = email;
-    }
 
     // Set subject and message depending on type of mail (requesting transaction or new password)
     @Override
@@ -57,7 +52,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
 
             subject = "Transaction Verification";
-            message = "A new password has been requested for your account on KEA Bank\nNew password: " + generatedValue;
+            message = "Verification number for new transaction in progress - KEA Bank\nVerification number: " + generatedValue;
 
         }
 

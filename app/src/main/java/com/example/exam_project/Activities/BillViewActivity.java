@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
+import com.example.exam_project.MailHandler.SendMail;
+import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
@@ -27,6 +30,9 @@ public class BillViewActivity extends AppCompatActivity {
     Bill bill;
     Customer customer;
     Long customerId;
+
+    int generatedValue;
+    Account defaultAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,15 +122,15 @@ public class BillViewActivity extends AppCompatActivity {
         builder.setPositiveButton("Pay bill", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Account defaultAccount = getUserDefaultAcc(customer);
+                defaultAccount = getUserDefaultAcc(customer);
                 if (defaultAccount.getAmount() < bill.getValue()) {
                     Toast.makeText(BillViewActivity.this, "You don't have enough funds to pay this bill!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
-                Toast.makeText(BillViewActivity.this, "Successfully paid bill!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(BillViewActivity.this, BillsActivity.class).putExtra("customerId", customerId));
-
+                generatedValue = new NemID().getRandomValue();
+                SendMail sendMail = new SendMail(BillViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
+                sendMail.execute();
+                NemIDDialog();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -145,5 +151,39 @@ public class BillViewActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    void NemIDDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(BillViewActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
+        builder.setTitle("Awaiting NemID verification...");
+
+        final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
+
+        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
+                String email = customer.getEmail();
+
+                if (nemIdNumber == generatedValue) {
+                    new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
+                    startActivity(new Intent(BillViewActivity.this, BillsActivity.class).putExtra("customerId", customerId));
+                    Toast.makeText(BillViewActivity.this, "Successfully paid bill!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(BillViewActivity.this, "Wrong NemID input! Retry the transaction process.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setView(mView);
+        builder.show();
     }
 }

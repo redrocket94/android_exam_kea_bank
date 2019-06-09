@@ -10,4 +10,6 @@ public class NemID {
     public int getRandomValue() {
         return new Random().nextInt((MAX - MIN)) + MIN;
     }
+
+
 }
