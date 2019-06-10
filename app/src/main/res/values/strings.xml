@@ -18,18 +18,18 @@
         <item>Savings</item>
     </string-array>
 
-    <string name="menu_title">Info</string>
+    <string name="menu_title" translatable="false">Info</string>
     <string name="menu_item01">Transactions</string>
     <string name="menu_item02">Bills</string>
     <string name="menu_item03">Change Password</string>
     <string name="menu_item04">Logout</string>
 
     <!-- Strings for account types -->
-    <string name="acctype_default_txt">DEFAULT</string>
-    <string name="acctype_business_txt">BUSINESS</string>
-    <string name="acctype_budget_txt">BUDGET</string>
-    <string name="acctype_pension_txt">PENSION</string>
-    <string name="acctype_savings_txt">SAVINGS</string>
+    <string name="acctype_default_txt" translatable="false">DEFAULT</string>
+    <string name="acctype_business_txt" translatable="false">BUSINESS</string>
+    <string name="acctype_budget_txt" translatable="false">BUDGET</string>
+    <string name="acctype_pension_txt" translatable="false">PENSION</string>
+    <string name="acctype_savings_txt" translatable="false">SAVINGS</string>
 
 
     <!-- Strings for MainActivity -->
@@ -201,10 +201,9 @@
 
     <!-- Strings for IntMonthlyPayDialog -->
     <string name="monthlypaydia_amount_input">Amount...</string>
-    <string name="monthlypaydia_budget_txt">Budget</string>
-    <string name="monthlypaydia_savings_txt">Savings</string>
-    <string name="monthlypaydia_info_txt">After selecting account and amount above, hit \"Submit\" \n to start your monthly billing to internal account.
-                                        \nMoney will be charged every month until cancelled or not enough funds.</string>
+    <string name="monthlypaydia_budget_txt" translatable="false">Budget</string>
+    <string name="monthlypaydia_savings_txt" translatable="false">Savings</string>
+    <string name="monthlypaydia_info_txt">After selecting amount above, hit \"Submit\" \n to start your monthly billing to internal account.\n                                        \nMoney will be charged every month until cancelled or not enough funds.</string>
     <string name="monthpaydia_title_txt">Setting up monthly billing...</string>
     <string name="monthpaydia_msg01_toast">Successfully set up a monthly billing plan for internal account</string>
     <string name="monthpaydia_msg02_toast">Successfully transferred money to an internal account with the payment billing plan!</string>

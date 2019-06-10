@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,6 +26,9 @@ public class IntMonthlyPayDialog extends DialogFragment {
     Customer customer;
     Long customerId;
 
+    Button cancel_billing_btn;
+    EditText amountToBill_input;
+    SharedPreferences sharedPreferences;
 
     public IntMonthlyPayDialog() {
     }
@@ -37,12 +41,32 @@ public class IntMonthlyPayDialog extends DialogFragment {
         customer = getArguments().getParcelable("customerObject");
         account = getArguments().getParcelable("accountObject");
 
+        sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("MyPrefs", 0);
+
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final View mView = getActivity().getLayoutInflater().inflate(R.layout.int_monthly_pay_dialog, null);
         builder.setView(mView);
         builder.setTitle(getString(R.string.monthpaydia_title_txt));
 
-        final EditText amountToBill_input = mView.findViewById(R.id.amount_to_bill);
+        cancel_billing_btn = mView.findViewById(R.id.cancel_billing_btn);
+
+        cancel_billing_btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                sharedPreferences.edit().remove("monthlybill_" + account.getAccountType().toString() + "_" + customerId).apply();
+                amountToBill_input.setText("");
+                Toast.makeText(getActivity(), "Successfully removed your Billing Plan!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        amountToBill_input = mView.findViewById(R.id.amount_to_bill);
+
+        String monthlyBilling = sharedPreferences.getString("monthlybill_" + account.getAccountType().toString() + "_" + customerId, null);
+        if (monthlyBilling != null) {
+            amountToBill_input.setText(monthlyBilling.substring(monthlyBilling.indexOf(" ") + 1));
+        }
 
         builder.setPositiveButton(getString(R.string.intdepositdia_positive_btn), new DialogInterface.OnClickListener() {
             @Override

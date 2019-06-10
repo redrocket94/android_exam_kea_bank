@@ -225,9 +225,14 @@ public class OverviewActivity extends AppCompatActivity {
             double amountToDeposit = Double.parseDouble(budgetBill.substring(budgetBill.indexOf(" ") + 1));
             String currDate = new LocalDate().getMonthOfYear() + "";
             if (currDate.equals(dataDate)) {
-                new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.BUDGET, amountToDeposit).execute();
-                Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
-                setBillingMonth(dataDate, "BUDGET", amountToDeposit);
+                if (getUserDefaultAcc(customer).getAmount() >= amountToDeposit) {
+                    new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.BUDGET, amountToDeposit).execute();
+                    Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
+                    setBillingMonth(dataDate, "BUDGET", amountToDeposit);
+                } else {
+                    Toast.makeText(this, "Tried to deposit to Billing Account, using your payment billing plan, but you have too little funds! Canceling plan.", Toast.LENGTH_SHORT).show();
+                    sharedPreferences.edit().remove("monthlybill_BUDGET_" + customerId).apply();
+                }
             }
         }
     }
@@ -241,9 +246,15 @@ public class OverviewActivity extends AppCompatActivity {
             double amountToDeposit = Double.parseDouble(savingsBill.substring(savingsBill.indexOf(" ") + 1));
             String currDate = new LocalDate().getMonthOfYear() + "";
             if (currDate.equals(dataDate)) {
-                new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.SAVINGS, amountToDeposit).execute();
-                Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
-                setBillingMonth(dataDate, "SAVINGS", amountToDeposit);
+                if (getUserDefaultAcc(customer).getAmount() >= amountToDeposit) {
+                    new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.SAVINGS, amountToDeposit).execute();
+                    Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
+                    setBillingMonth(dataDate, "SAVINGS", amountToDeposit);
+                } else {
+                    Toast.makeText(this, "Tried to deposit to Savings Account, using your payment billing plan, but you have too little funds! Canceling plan.", Toast.LENGTH_SHORT).show();
+                    sharedPreferences.edit().remove("monthlybill_SAVINGS_" + customerId).apply();
+
+                }
             }
         }
     }

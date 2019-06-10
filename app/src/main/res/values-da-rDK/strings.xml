@@ -114,4 +114,19 @@
     <string name="withdrawdialog_positive_btn">Træk</string>
     <string name="withdrawdialog_titlepartial01_txt">"Trækker fra: "</string>
     <string name="reg_title_txt">Tilmeldingsform</string>
+    <string name="accountview_monthlypay_btn">Månedlig Fakturering</string>
+    <string name="menu_item01">Transaktioner</string>
+    <string name="menu_item02">Regninger</string>
+    <string name="menu_item03">Skift kodeord</string>
+    <string name="menu_item04">Log ud</string>
+    <string name="monthlypaydia_amount_input">Beløb...</string>
+    <string name="monthlypaydia_info_txt">Efter indtastning af beløb bedes du venlig taste videre for at starte\nden månedlige indbetaling til din interne konto.\n                                        \nDer vil blive hævet penge hver måned indtil annulleret eller for lavt beløb på konto.</string>
+    <string name="monthpaydia_msg01_toast">Satte succesfuldt en plan op til månedlig fakturering i interne konto.</string>
+    <string name="monthpaydia_msg02_toast">Sendte automatisk penge til en intern konto med din månedlige faktureringsplan!</string>
+    <string name="monthpaydia_title_txt">Udarbejder månedlig faktureringsplan...</string>
+    <string name="overview_msg05_toast">Beklager, du har allerede alle kontotyper der kan benyttes!</string>
+    <string name="overview_newaccdiapositive_btn">Åben konto</string>
+    <string name="overview_newaccinfo_btn">Godkendelse afventer...</string>
+    <string name="overview_newacctitle_txt">Åbner en ny konto...</string>
+    <string name="withdrawdialog_msg02_toast">Hævede succesfuldt penge til DEFAULT konto!</string>
 </resources>
