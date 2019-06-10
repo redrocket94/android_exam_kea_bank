@@ -1,14 +1,14 @@
 package com.example.exam_project.Activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,16 +18,14 @@ import com.example.exam_project.Account;
 import com.example.exam_project.Bill;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
+import com.example.exam_project.Dialogs.NewAccDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserAccountsById;
-import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,6 +37,7 @@ public class OverviewActivity extends AppCompatActivity {
     Button newAcc_btn;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +47,6 @@ public class OverviewActivity extends AppCompatActivity {
 
         newAcc_btn = findViewById(R.id.new_acc_btn);
 
-        // Connect Spinner in View to its functionality
-        new InfoSpinner(this, OverviewActivity.this, customerId).connectSpinner();
 
         if (customer == null) {
             try {
@@ -66,6 +63,7 @@ public class OverviewActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.overview_msg01_toast), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
+
 
         // Set welcome text to users name
         TextView welcomeText = findViewById(R.id.welcomeText);
@@ -84,6 +82,16 @@ public class OverviewActivity extends AppCompatActivity {
 
         // Pay any automatic bills
         payBillsAuto();
+
+    }
+
+    public void createNewAcc(View v) {
+        Bundle args = new Bundle();
+        args.putLong("customerId", customerId);
+        args.putParcelable("customerObject", customer);
+        DialogFragment newAccDialog = new NewAccDialog();
+        newAccDialog.setArguments(args);
+        newAccDialog.show(getSupportFragmentManager(), "new_acc_dialog");
 
     }
 
@@ -108,7 +116,7 @@ public class OverviewActivity extends AppCompatActivity {
             // Test if you have approval for accounts, if not then disable and set button text
             if (!account.isApproved()) {
                 button.setClickable(false);
-                button.setText("Approval Pending...");
+                button.setText(getString(R.string.overview_newaccinfo_btn));
             } else {
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -127,73 +135,6 @@ public class OverviewActivity extends AppCompatActivity {
             table.addView(button);
 
         }
-    }
-
-    List<String> addNewAccounts(Customer currCustomer) {
-        List<String> list = new ArrayList<>();
-        list.add("DEFAULT");
-        list.add("BUSINESS");
-        list.add("BUDGET");
-        list.add("PENSION");
-        list.add("SAVINGS");
-
-        for (Account account : currCustomer.getAccounts()) {
-            if (account.getAccountType() == Account.AccountType.DEFAULT) {
-                list.remove("DEFAULT");
-            } else if (account.getAccountType() == Account.AccountType.BUSINESS) {
-                list.remove("BUSINESS");
-            } else if (account.getAccountType() == Account.AccountType.BUDGET) {
-                list.remove("BUDGET");
-            } else if (account.getAccountType() == Account.AccountType.PENSION) {
-                list.remove("PENSION");
-            } else if (account.getAccountType() == Account.AccountType.SAVINGS) {
-                list.remove("SAVINGS");
-            }
-
-        }
-        return list;
-    }
-
-    public void createNewAcc(View v) {
-        super.onStart();
-        // Checks if user already has all accounts possible and returns, before a dialog can be built
-        List<String> list = addNewAccounts(customer);
-        if (list.size() == 0) {
-            Toast.makeText(OverviewActivity.this, "Sorry, you already have all possible accounts!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.new_acc_dialog, null);
-        builder.setTitle("Opening a new account...");
-        final Spinner accTypeSpinner = mView.findViewById(R.id.new_acc_spinner);
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(OverviewActivity.this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accTypeSpinner.setAdapter(adapter);
-
-        builder.setPositiveButton("Open account", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selection = accTypeSpinner.getSelectedItem().toString();
-
-                new HRT_UpdateUserAccountsById(customerId, selection).execute();
-
-                // Refreshing page to display new account
-                finish();
-                startActivity(getIntent());
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
     }
 
     private void payBillsAuto() {
@@ -230,4 +171,43 @@ public class OverviewActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.kea_menu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            // Transactions
+            case R.id.kea_menu_item01:
+                Intent transactionsActivity = new Intent(this, TransactionsActivity.class);
+                transactionsActivity.putExtra("customerId", customerId);
+                this.startActivity(transactionsActivity);
+                break;
+            // Bills
+            case R.id.kea_menu_item02:
+                Intent billsActivity = new Intent(this, BillsActivity.class);
+                billsActivity.putExtra("customerId", customerId);
+                this.startActivity(billsActivity);
+                break;
+            // Change Password
+            case R.id.kea_menu_item03:
+                Intent passChangeActivity = new Intent(this, PassChangeActivity.class);
+                passChangeActivity.putExtra("customerId", customerId);
+                this.startActivity(passChangeActivity);
+                break;
+            // Log out
+            case R.id.kea_menu_item04:
+                Toast.makeText(this, getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
+                this.startActivity(new Intent(this, MainActivity.class));
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

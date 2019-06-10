@@ -11,18 +11,25 @@
 
     <!-- Strings for AccountType Spinner -->
     <string-array name="accountTypes">
+        <item>Default</item>
+        <item>Budget</item>
         <item>Business</item>
         <item>Pension</item>
         <item>Savings</item>
     </string-array>
 
-    <string-array name="infospinner_items">
-        <item>Transactions</item>
-        <item>Bills</item>
-        <item>Change Password</item>
-        <item>Logout</item>
-        <item>[More]</item>
-    </string-array>
+    <string name="menu_title">Info</string>
+    <string name="menu_item01">Transactions</string>
+    <string name="menu_item02">Bills</string>
+    <string name="menu_item03">Change Password</string>
+    <string name="menu_item04">Logout</string>
+
+    <!-- Strings for account types -->
+    <string name="acctype_default_txt">DEFAULT</string>
+    <string name="acctype_business_txt">BUSINESS</string>
+    <string name="acctype_budget_txt">BUDGET</string>
+    <string name="acctype_pension_txt">PENSION</string>
+    <string name="acctype_savings_txt">SAVINGS</string>
 
 
     <!-- Strings for MainActivity -->
@@ -34,6 +41,7 @@
     <string name="main_register_btn">Register</string>
 
     <!-- Strings for RegisterActivity -->
+    <string name="reg_title_txt">Registration Form</string>
     <string name="reg_username_input">Username...</string>
     <string name="reg_password_input">Password...</string>
     <string name="reg_password_verify_input">Password confirmation...</string>
@@ -62,6 +70,10 @@
     <string name="overview_msg03partial01_toast">Made an AUTOMATIC payment of:</string>
     <string name="overview_msg03partial02_toast">to user of email:</string>
     <string name="overview_msg04_toast">Tried to make an AUTOMATIC payment on bill, but funds in DEFAULT account too low!</string>
+    <string name="overview_msg05_toast">Sorry, you already have all possible accounts!</string>
+    <string name="overview_newaccinfo_btn">Approval pending...</string>
+    <string name="overview_newacctitle_txt">Opening a new account...</string>
+    <string name="overview_newaccdiapositive_btn">Open account</string>
 
     <!-- Strings for AccountViewActivity -->
     <string name="accountview_accounttype_txt">Account</string>
@@ -165,7 +177,7 @@
     <!-- Internal strings for TransactionsActivity -->
     <string name="transactions_msg01_toast">There was an error retrieving your account customerData, please log in again.</string>
 
-    <!-- Strings for DepositDialog -->
+    <!-- Strings for IntDepositDialog -->
     <string name="depositdialog_amount_input">Amount to deposit...</string>
 
     <!-- Strings for NemIDDialog -->

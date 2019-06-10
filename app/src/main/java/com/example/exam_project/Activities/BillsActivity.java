@@ -3,6 +3,9 @@ package com.example.exam_project.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -15,7 +18,6 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.Modules.InfoSpinner;
 import com.example.exam_project.R;
 
 public class BillsActivity extends AppCompatActivity {
@@ -52,8 +54,6 @@ public class BillsActivity extends AppCompatActivity {
             loadBills();
         }
 
-        // Connect Spinner in View to its functionality
-        new InfoSpinner(this, BillsActivity.this, customerId).connectSpinner();
 
     }
 
@@ -98,5 +98,45 @@ public class BillsActivity extends AppCompatActivity {
     public void onClickOverview(View v) {
         super.onStart();
         startActivity(new Intent(BillsActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.kea_menu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            // Transactions
+            case R.id.kea_menu_item01:
+                Intent transactionsActivity = new Intent(this, TransactionsActivity.class);
+                transactionsActivity.putExtra("customerId", customerId);
+                this.startActivity(transactionsActivity);
+                break;
+            // Bills
+            case R.id.kea_menu_item02:
+                Intent billsActivity = new Intent(this, BillsActivity.class);
+                billsActivity.putExtra("customerId", customerId);
+                this.startActivity(billsActivity);
+                break;
+            // Change Password
+            case R.id.kea_menu_item03:
+                Intent passChangeActivity = new Intent(this, PassChangeActivity.class);
+                passChangeActivity.putExtra("customerId", customerId);
+                this.startActivity(passChangeActivity);
+                break;
+            // Log out
+            case R.id.kea_menu_item04:
+                Toast.makeText(this, getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
+                this.startActivity(new Intent(this, MainActivity.class));
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

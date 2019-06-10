@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/kea_menu"
+        android:icon="@drawable/ic_info"
+        android:title="@string/menu_title"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/kea_menu_item01"
+                android:title="@string/menu_item01"></item>
+
+            <item
+                android:id="@+id/kea_menu_item02"
+                android:title="@string/menu_item02"></item>
+
+            <item
+                android:id="@+id/kea_menu_item03"
+                android:title="@string/menu_item03"></item>
+
+            <item
+                android:id="@+id/kea_menu_item04"
+                android:title="@string/menu_item04"></item>
+        </menu>
+    </item>
+</menu>

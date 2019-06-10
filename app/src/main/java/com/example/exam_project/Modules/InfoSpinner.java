@@ -22,16 +22,24 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
     Context context;
     Long customerId;
 
+    String[] list;
+    Spinner infoSpinner;
+    ArrayAdapter<String> adapter;
+
     public InfoSpinner(Activity activity, Context context, Long customerId) {
         this.activity = activity;
         this.context = context;
         this.customerId = customerId;
+
+        adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        infoSpinner.setAdapter(adapter);
+
     }
 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
         switch (position) {
             // Transactions
             case 0:
@@ -40,20 +48,20 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
                 activity.startActivity(transactionsActivity);
                 break;
             // Bills
-            case 1:
+            case 2:
                 Intent billsActivity = new Intent(activity, BillsActivity.class);
                 billsActivity.putExtra("customerId", customerId);
                 activity.startActivity(billsActivity);
                 break;
             // Change Password
-            case 2:
+            case 3:
                 Intent passChangeActivity = new Intent(activity, PassChangeActivity.class);
                 passChangeActivity.putExtra("customerId", customerId);
                 activity.startActivity(passChangeActivity);
                 break;
             // Log out
-            case 3:
-                Toast.makeText(activity, getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
+            case 4:
+                Toast.makeText(activity, activity.getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
                 activity.startActivity(new Intent(activity, MainActivity.class));
                 break;
         }
@@ -62,23 +70,5 @@ public class InfoSpinner extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-
-    public void connectSpinner() {
-        // Creating spinner
-        Spinner info_spinner = activity.findViewById(R.id.info_spinner);
-        String[] list = activity.getResources().getStringArray(R.array.infospinner_items);
-        final int listsize = list.length - 1;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, list) {
-            @Override
-            public int getCount() {
-                return (listsize); // Truncate the list
-            }
-        };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        info_spinner.setAdapter(adapter);
-        info_spinner.setOnItemSelectedListener(this);
-        info_spinner.setSelection(listsize);
     }
 }

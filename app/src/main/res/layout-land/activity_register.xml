@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Activities.RegisterActivity">
 
+
     <EditText
         android:id="@+id/reg_username"
         android:layout_width="wrap_content"
@@ -21,9 +22,10 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.193"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162" />
+        app:layout_constraintVertical_bias="0.228" />
 
     <EditText
         android:id="@+id/reg_password"
@@ -61,34 +63,32 @@
         android:id="@+id/reg_back_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="52dp"
         android:onClick="onReturnToLoginClick"
         android:text="@string/reg_returnlogin_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/reg_register_btn"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/reg_register_btn"
-        app:layout_constraintTop_toBottomOf="@+id/reg_register_btn"
-        app:layout_constraintVertical_bias="0.539" />
+        app:layout_constraintStart_toStartOf="@+id/reg_register_btn" />
 
     <EditText
         android:id="@+id/reg_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginLeft="84dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/reg_email_input"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/reg_password_verify"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/reg_password_verify"
-        app:layout_constraintTop_toBottomOf="@+id/reg_password_verify"
-        app:layout_constraintVertical_bias="0.101" />
+        app:layout_constraintBottom_toBottomOf="@+id/reg_password_verify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toEndOf="@+id/reg_username"
+        app:layout_constraintTop_toTopOf="@+id/reg_username"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/reg_firstName"
@@ -134,27 +134,31 @@
         android:layout_marginBottom="8dp"
         android:onClick="onRegisterClick"
         android:text="@string/reg_register_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/reg_age"
+        app:layout_constraintBottom_toTopOf="@+id/reg_back_btn"
+        app:layout_constraintEnd_toEndOf="@+id/reg_lastname"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/reg_age"
+        app:layout_constraintStart_toStartOf="@+id/reg_lastname"
         app:layout_constraintTop_toBottomOf="@+id/reg_age"
-        app:layout_constraintVertical_bias="0.064" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/reg_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/reg_age_input"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/reg_lastname"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/reg_lastname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reg_lastname"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.067" />
 
     <TextView
         android:id="@+id/reg_title_txt"

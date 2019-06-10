@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -16,19 +19,14 @@ import android.widget.Toast;
 import com.example.exam_project.Account;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
+import com.example.exam_project.Dialogs.ExtDepositDialog;
+import com.example.exam_project.Dialogs.IntDepositDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateInternalAccValue;
-import com.example.exam_project.MailHandler.SendMail;
-import com.example.exam_project.Modules.InfoSpinner;
-import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class AccountViewActivity extends AppCompatActivity {
@@ -67,9 +65,6 @@ public class AccountViewActivity extends AppCompatActivity {
             }
         }
 
-        // Connect Spinner in View to its functionality
-        new InfoSpinner(this, getApplicationContext(), customerId).connectSpinner();
-
         withdraw_btn = findViewById(R.id.withdraw_btn);
         deposit_btn = findViewById(R.id.deposit_btn);
         deposit_external_btn = findViewById(R.id.deposit_external_btn);
@@ -95,57 +90,13 @@ public class AccountViewActivity extends AppCompatActivity {
 
         deposit_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.deposit_dialog, null);
-                builder.setTitle(getString(R.string.intdepositdia_titlepartial01_txt) + account.getAccountType().toString() + getString(R.string.intdepositdia_titlepartial02_txt));
-
-                accTypeSpinner = mView.findViewById(R.id.internal_accs_spinner);
-                final EditText amountToDeposit_input = mView.findViewById(R.id.amount_to_deposit);
-
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(AccountViewActivity.this, android.R.layout.simple_spinner_item, getUserAccounts());
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                accTypeSpinner.setAdapter(adapter);
-
-                builder.setPositiveButton(getString(R.string.intdepositdia_positive_btn), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        amountToDeposit = Double.parseDouble(amountToDeposit_input.getText().toString());
-                        
-                        // Make sure there's enough money to transfer by getting current amount of money on account
-                        if (amountToDeposit > account.getAmount()) {
-                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg01_toast), Toast.LENGTH_SHORT).show();
-                            return;
-                        } else if (amountToDeposit < 0.5) {
-                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg02_toast), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // If PENSION type, get NemID verification
-                        if (accTypeSpinner.getSelectedItemId() == Arrays.asList(getResources().getStringArray(R.array.accountTypes)).indexOf("PENSION")) {
-                            generatedValue = new NemID().getRandomValue();
-                            SendMail sendMail = new SendMail(AccountViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
-                            sendMail.execute();
-                            NemIDDialog("int");
-                        } else {
-                            new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
-                            Toast.makeText(AccountViewActivity.this, getString(R.string.intdepositdia_msg03_toast), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
-                        }
-
-
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.intdepositdia_negative_btn), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                builder.setView(mView);
-                builder.show();
+                Bundle args = new Bundle();
+                args.putParcelable("customerObject", customer);
+                args.putParcelable("accountObject", account);
+                args.putLong("customerId", customerId);
+                DialogFragment depositDialog = new IntDepositDialog();
+                depositDialog.setArguments(args);
+                depositDialog.show(getSupportFragmentManager(), "deposit_dialog");
             }
 
         });
@@ -156,17 +107,7 @@ public class AccountViewActivity extends AppCompatActivity {
         startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
     }
 
-    // Returns a list of the users accounts that are approved and NOT the current account
-    List<String> getUserAccounts() {
-        List<String> userAccountsList = new ArrayList<>();
-        for (Account userAccount :
-                customer.getAccounts()) {
-            if (userAccount.getAccountType() != account.getAccountType() && userAccount.isApproved()) {
-                userAccountsList.add(userAccount.getAccountType().toString());
-            }
-        }
-        return userAccountsList;
-    }
+
 
     public void onClickWithdraw (View v) {
         super.onStart();
@@ -204,78 +145,55 @@ public class AccountViewActivity extends AppCompatActivity {
 
     public void onClickUserDeposit(View v) {
         super.onStart();
-        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.user_deposit_dialog, null);
-        builder.setTitle(getString(R.string.extdepositdia_titlepartial01_txt) + account.getAccountType().toString());
+        Bundle args = new Bundle();
+        args.putParcelable("customerObject", customer);
+        System.out.println(account.getAccountId());
+        args.putParcelable("accountObject", account);
+        args.putLong("customerId", customerId);
+        DialogFragment extDepositDialog = new ExtDepositDialog();
+        extDepositDialog.setArguments(args);
+        extDepositDialog.show(getSupportFragmentManager(), "user_deposit_dialog");
 
-        final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
-        final EditText email_input = mView.findViewById(R.id.email_input);
-
-        builder.setPositiveButton(getString(R.string.extdepositdia_positive_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
-                String email = email_input.getText().toString();
-
-                // Make sure there's enough money to transfer by getting current amount of money on account
-                if (amountToWithdraw > account.getAmount()) {
-                    Toast.makeText(AccountViewActivity.this, getString(R.string.extdepositdia_msg01_toast), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                generatedValue = new NemID().getRandomValue();
-                SendMail sendMail = new SendMail(AccountViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
-                sendMail.execute();
-                NemIDDialog("ext");
-
-            }
-        });
-        builder.setNegativeButton(getString(R.string.extdepositdia_negative_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
     }
 
-    void NemIDDialog(final String intOrExt) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
-        builder.setTitle(getString(R.string.nemiddia_title_txt));
 
-        final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.kea_menu, menu);
+        return true;
 
-        builder.setPositiveButton(getString(R.string.nemiddia_positive_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
-                String email = customer.getEmail();
+    }
 
-                if (nemIdNumber == generatedValue) {
-                    if (intOrExt.equals("ext")) {
-                        new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
-                        startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
-                    } else if (intOrExt.equals("int")) {
-                        new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accTypeSpinner.getSelectedItem().toString()), amountToDeposit).execute();
-                        startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
-                    }
-                    Toast.makeText(AccountViewActivity.this, getString(R.string.nemiddia_msg01_toast), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(AccountViewActivity.this, getString(R.string.nemiddia_msg02_toast), Toast.LENGTH_SHORT).show();
-                }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-            }
-        });
-        builder.setNegativeButton(getString(R.string.nemiddia_negative_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        switch (item.getItemId()) {
+            // Transactions
+            case R.id.kea_menu_item01:
+                Intent transactionsActivity = new Intent(this, TransactionsActivity.class);
+                transactionsActivity.putExtra("customerId", customerId);
+                this.startActivity(transactionsActivity);
+                break;
+            // Bills
+            case R.id.kea_menu_item02:
+                Intent billsActivity = new Intent(this, BillsActivity.class);
+                billsActivity.putExtra("customerId", customerId);
+                this.startActivity(billsActivity);
+                break;
+            // Change Password
+            case R.id.kea_menu_item03:
+                Intent passChangeActivity = new Intent(this, PassChangeActivity.class);
+                passChangeActivity.putExtra("customerId", customerId);
+                this.startActivity(passChangeActivity);
+                break;
+            // Log out
+            case R.id.kea_menu_item04:
+                Toast.makeText(this, getString(R.string.infospinner_msg01_toast), Toast.LENGTH_SHORT).show();
+                this.startActivity(new Intent(this, MainActivity.class));
+                break;
+        }
 
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
+        return super.onOptionsItemSelected(item);
     }
 }
