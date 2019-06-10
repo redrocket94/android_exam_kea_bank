@@ -1,28 +1,23 @@
 package com.example.exam_project.Activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.exam_project.Account;
 import com.example.exam_project.Bill;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
+import com.example.exam_project.Dialogs.PayBillDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
-import com.example.exam_project.MailHandler.SendMail;
-import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
@@ -33,9 +28,6 @@ public class BillViewActivity extends AppCompatActivity {
     Bill bill;
     Customer customer;
     Long customerId;
-
-    int generatedValue;
-    Account defaultAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,82 +104,13 @@ public class BillViewActivity extends AppCompatActivity {
 
     public void onClickPayBill(View v) {
         super.onStart();
-        AlertDialog.Builder builder = new AlertDialog.Builder(BillViewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.pay_bill_dialog, null);
-
-        builder.setTitle(getString(R.string.billviewdia_title_txt));
-
-        TextView dialog_pay_txt = mView.findViewById(R.id.dialog_pay_txt);
-        dialog_pay_txt.setText(dialog_pay_txt.getText().toString() + bill.getValue() + "\n" + getString(R.string.billviewdia_infopartial01_txt) +
-                "\t\t" + bill.getBillCollectorEmail() + "\n\n " + getString(R.string.billviewdia_infopartial02_txt) + " " +
-                getString(R.string.billviewdia_infopartial03_txt) + "\n " + getString(R.string.billviewdia_infopartial04_txt) + " " + getString(R.string.billviewdia_infopartial05_txt));
-
-        builder.setPositiveButton(getString(R.string.billviewdia_positive_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                defaultAccount = getUserDefaultAcc(customer);
-                if (defaultAccount.getAmount() < bill.getValue()) {
-                    Toast.makeText(BillViewActivity.this, getString(R.string.billviewdia_msg01_toast), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                generatedValue = new NemID().getRandomValue();
-                SendMail sendMail = new SendMail(BillViewActivity.this, SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
-                sendMail.execute();
-                NemIDDialog();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.billviewdia_negative_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
-    }
-
-    Account getUserDefaultAcc(Customer currCustomer) {
-        for (Account account : currCustomer.getAccounts()) {
-            if (account.getAccountType() == Account.AccountType.DEFAULT) {
-                return account;
-            }
-        }
-        return null;
-    }
-
-    void NemIDDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BillViewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.nemid_verify_dialog, null);
-        builder.setTitle(getString(R.string.nemiddia_title_txt));
-
-        final EditText nemIdNumber_input = mView.findViewById(R.id.nemid_field);
-
-        builder.setPositiveButton(getString(R.string.nemiddia_positive_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int nemIdNumber = Integer.parseInt(nemIdNumber_input.getText().toString());
-                String email = customer.getEmail();
-
-                if (nemIdNumber == generatedValue) {
-                    new HRT_SetExtAccValByEmail(defaultAccount, bill.getBillCollectorEmail(), bill.getValue(), customer, HRT_SetExtAccValByEmail.SendType.BILL, bill.getId()).execute();
-                    startActivity(new Intent(BillViewActivity.this, BillsActivity.class).putExtra("customerId", customerId));
-                    Toast.makeText(BillViewActivity.this, getString(R.string.nemiddia_success_toast), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(BillViewActivity.this, getString(R.string.nemiddia_msg02_toast), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-        builder.setNegativeButton(getString(R.string.nemiddia_negative_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
+        Bundle args = new Bundle();
+        args.putParcelable("customerObject", customer);
+        args.putLong("customerId", customerId);
+        args.putParcelable("billObject", bill);
+        DialogFragment payBillDialog = new PayBillDialog();
+        payBillDialog.setArguments(args);
+        payBillDialog.show(getSupportFragmentManager(), "pay_bill_dialog");
     }
 
     @Override

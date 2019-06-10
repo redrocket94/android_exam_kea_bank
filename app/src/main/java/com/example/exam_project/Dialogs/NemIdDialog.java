@@ -33,6 +33,9 @@ public class NemIdDialog extends DialogFragment {
     String email;
     double amountToWithdraw;
 
+    // Bill only
+    Long billId;
+
     public NemIdDialog() {
     }
 
@@ -50,6 +53,7 @@ public class NemIdDialog extends DialogFragment {
             accountType = getArguments().getString("accountType");
             email = getArguments().getString("email", email);
             amountToWithdraw = getArguments().getDouble("amountToWithdraw", amountToWithdraw);
+            billId = getArguments().getLong("billId");
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -66,9 +70,17 @@ public class NemIdDialog extends DialogFragment {
 
                 if (nemIdNumber == generatedValue) {
                     if (intOrExt.equals("ext")) {
-                        new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
-                        startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
+                        if (billId != null && billId != 0) {
+                            System.out.println("bill entered");
+                            new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer, HRT_SetExtAccValByEmail.SendType.BILL, billId).execute();
+                            startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
+                        } else if (billId == null || billId == 0) {
+                            System.out.println("ext entered");
+                            new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
+                            startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
+                        }
                     } else if (intOrExt.equals("int")) {
+                        System.out.println("sent as int");
                         new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accountType), amountToDeposit).execute();
                         startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
                     }

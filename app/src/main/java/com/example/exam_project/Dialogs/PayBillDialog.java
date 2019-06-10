@@ -7,27 +7,29 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.exam_project.Account;
+import com.example.exam_project.Bill;
 import com.example.exam_project.Customer;
 import com.example.exam_project.MailHandler.SendMail;
 import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 
-public class ExtDepositDialog extends DialogFragment {
+public class PayBillDialog extends DialogFragment {
 
+    Bill bill;
     Customer customer;
-    Account account;
     Long customerId;
+    String email;
+    double amount;
 
-    double amountToWithdraw;
+    Account defaultAccount;
     int generatedValue;
 
-    String email;
 
-    public ExtDepositDialog() {
+    public PayBillDialog() {
     }
 
     @Override
@@ -35,37 +37,38 @@ public class ExtDepositDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         customer = getArguments().getParcelable("customerObject");
-        account = getArguments().getParcelable("accountObject");
         customerId = getArguments().getLong("customerId");
+        bill = getArguments().getParcelable("billObject");
 
+        email = bill.getBillCollectorEmail();
+        amount = bill.getValue();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View mView = getActivity().getLayoutInflater().inflate(R.layout.user_deposit_dialog, null);
+        View mView = getActivity().getLayoutInflater().inflate(R.layout.pay_bill_dialog, null);
         builder.setView(mView);
-        builder.setTitle(getString(R.string.extdepositdia_titlepartial01_txt) + account.getAccountType().toString());
 
-        final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
-        final EditText email_input = mView.findViewById(R.id.email_input);
+        builder.setTitle(getString(R.string.billviewdia_title_txt));
 
-        builder.setPositiveButton(getString(R.string.extdepositdia_positive_btn), new DialogInterface.OnClickListener() {
+        TextView dialog_pay_txt = mView.findViewById(R.id.dialog_pay_txt);
+        dialog_pay_txt.setText(dialog_pay_txt.getText().toString() + bill.getValue() + "\n" + getString(R.string.billviewdia_infopartial01_txt) +
+                "\t\t" + bill.getBillCollectorEmail() + "\n\n " + getString(R.string.billviewdia_infopartial02_txt) + " " +
+                getString(R.string.billviewdia_infopartial03_txt) + "\n " + getString(R.string.billviewdia_infopartial04_txt) + " " + getString(R.string.billviewdia_infopartial05_txt));
+
+        builder.setPositiveButton(getString(R.string.billviewdia_positive_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
-                email = email_input.getText().toString();
-
-                // Make sure there's enough money to transfer by getting current amount of money on account
-                if (amountToWithdraw > account.getAmount()) {
-                    Toast.makeText(getActivity(), getString(R.string.extdepositdia_msg01_toast), Toast.LENGTH_SHORT).show();
+                defaultAccount = getUserDefaultAcc(customer);
+                if (defaultAccount.getAmount() < bill.getValue()) {
+                    Toast.makeText(getActivity(), getString(R.string.billviewdia_msg01_toast), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 generatedValue = new NemID().getRandomValue();
                 SendMail sendMail = new SendMail(getActivity(), SendMail.MailType.TRANSACTION_CONFIRMATION, customer.getEmail(), generatedValue);
                 sendMail.execute();
                 verifyNemId();
-
             }
         });
-        builder.setNegativeButton(getString(R.string.extdepositdia_negative_btn), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.billviewdia_negative_btn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -75,17 +78,25 @@ public class ExtDepositDialog extends DialogFragment {
         return builder.create();
     }
 
+    Account getUserDefaultAcc(Customer currCustomer) {
+        for (Account account : currCustomer.getAccounts()) {
+            if (account.getAccountType() == Account.AccountType.DEFAULT) {
+                return account;
+            }
+        }
+        return null;
+    }
+
     private void verifyNemId() {
         Bundle args = new Bundle();
         args.putLong("customerId", customerId);
         args.putParcelable("customerObject", customer);
-        args.putParcelable("accountObject", account);
         args.putString("email", email);
         args.putInt("generatedValue", generatedValue);
         args.putString("intOrExt", "ext");
-        args.putDouble("amountToWithdraw", amountToWithdraw);
-        args.putString("accountType", account.getAccountType().toString());
-        args.putLong("billId", 0);
+        args.putDouble("amountToWithdraw", amount);
+        args.putParcelable("accountObject", defaultAccount);
+        args.putLong("billId", bill.getId());
         DialogFragment nemIdDialog = new NemIdDialog();
         nemIdDialog.setArguments(args);
         nemIdDialog.show(getActivity().getSupportFragmentManager(), "nemid_verify_dialog");

@@ -1,7 +1,5 @@
 package com.example.exam_project.Activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -21,9 +19,9 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
 import com.example.exam_project.Dialogs.ExtDepositDialog;
 import com.example.exam_project.Dialogs.IntDepositDialog;
+import com.example.exam_project.Dialogs.WithdrawDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
-import com.example.exam_project.HttpRequestTasks.HRT_UpdateInternalAccValue;
 import com.example.exam_project.R;
 
 import java.text.DecimalFormat;
@@ -88,18 +86,6 @@ public class AccountViewActivity extends AppCompatActivity {
         double held_amount = Double.parseDouble(new DecimalFormat("0.#####").format(account.getAmount()));
         account_amount.setText(account_amount.getText() + " " + held_amount);
 
-        deposit_btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putParcelable("customerObject", customer);
-                args.putParcelable("accountObject", account);
-                args.putLong("customerId", customerId);
-                DialogFragment depositDialog = new IntDepositDialog();
-                depositDialog.setArguments(args);
-                depositDialog.show(getSupportFragmentManager(), "deposit_dialog");
-            }
-
-        });
     }
 
     public void onClickBack(View v) {
@@ -107,47 +93,31 @@ public class AccountViewActivity extends AppCompatActivity {
         startActivity(new Intent(this, OverviewActivity.class).putExtra("customerId", customerId));
     }
 
-
+    public void onClickIntDeposit(View v) {
+        super.onStart();
+        Bundle args = new Bundle();
+        args.putParcelable("customerObject", customer);
+        args.putParcelable("accountObject", account);
+        args.putLong("customerId", customerId);
+        DialogFragment depositDialog = new IntDepositDialog();
+        depositDialog.setArguments(args);
+        depositDialog.show(getSupportFragmentManager(), "deposit_dialog");
+    }
 
     public void onClickWithdraw (View v) {
         super.onStart();
-        AlertDialog.Builder builder = new AlertDialog.Builder(AccountViewActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.withdraw_dialog, null);
-        builder.setTitle(getString(R.string.withdrawdialog_titlepartial01_txt) + account.getAccountType().toString());
-
-        final EditText amountToWithdraw_input = mView.findViewById(R.id.amount_to_withdraw);
-
-        builder.setPositiveButton(getString(R.string.withdrawdialog_positive_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                double amountToWithdraw = Double.parseDouble(amountToWithdraw_input.getText().toString());
-
-                // Make sure there's enough money to transfer by getting current amount of money on account
-                if (amountToWithdraw > account.getAmount()) {
-                    Toast.makeText(AccountViewActivity.this, getString(R.string.withdrawdialog_msg01_toast), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.DEFAULT, amountToWithdraw).execute();
-                startActivity(new Intent(AccountViewActivity.this, OverviewActivity.class).putExtra("customerId", customerId));
-
-            }
-        });
-        builder.setNegativeButton(getString(R.string.withdrawdialog_negative_btn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.setView(mView);
-        builder.show();
+        Bundle args = new Bundle();
+        args.putParcelable("accountObject", account);
+        args.putLong("customerId", customerId);
+        DialogFragment withdrawDialog = new WithdrawDialog();
+        withdrawDialog.setArguments(args);
+        withdrawDialog.show(getSupportFragmentManager(), "withdraw_dialog");
     }
 
     public void onClickUserDeposit(View v) {
         super.onStart();
         Bundle args = new Bundle();
         args.putParcelable("customerObject", customer);
-        System.out.println(account.getAccountId());
         args.putParcelable("accountObject", account);
         args.putLong("customerId", customerId);
         DialogFragment extDepositDialog = new ExtDepositDialog();

@@ -44,10 +44,15 @@ public class OverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_overview);
 
         customerId = getIntent().getLongExtra("customerId", 0);
-
         newAcc_btn = findViewById(R.id.new_acc_btn);
 
+        // If customerId is 0, return to loginactivity
+        if (customerId == 0) {
+            Toast.makeText(this, getString(R.string.overview_msg01_toast), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+        }
 
+        // Test if customer is null, if yes then update
         if (customer == null) {
             try {
                 CustomerData customerData = new HRT_GetUserById(customerId).execute().get();
@@ -56,12 +61,6 @@ public class OverviewActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        // If customerId is 0, return to loginactivity
-        if (customerId == 0) {
-            Toast.makeText(this, getString(R.string.overview_msg01_toast), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
         }
 
 
@@ -111,7 +110,7 @@ public class OverviewActivity extends AppCompatActivity {
             table.addView(accountType);
 
             Button button = new Button(this);
-            button.setText("See details");
+            button.setText(getString(R.string.bills_btntxt_btn));
 
             // Test if you have approval for accounts, if not then disable and set button text
             if (!account.isApproved()) {

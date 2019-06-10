@@ -95,6 +95,7 @@
     <string name="withdrawdialog_titlepartial01_txt">Withdrawing from: </string>
     <string name="withdrawdialog_positive_btn">Withdraw</string>
     <string name="withdrawdialog_msg01_toast">You cannot withdraw more money than you have on your account!</string>
+    <string name="withdrawdialog_msg02_toast">Successfully withdrew money to DEFAULT account!</string>
     <string name="withdrawdialog_negative_btn">Cancel</string>
     <!-- Dialog strings for depositing to external user account in AccountViewActivity -->
     <string name="extdepositdia_titlepartial01_txt">Sending from account: </string>
