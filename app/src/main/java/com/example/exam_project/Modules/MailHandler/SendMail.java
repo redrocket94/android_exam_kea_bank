@@ -1,4 +1,4 @@
-package com.example.exam_project.MailHandler;
+package com.example.exam_project.Modules.MailHandler;
 
 import android.content.Context;
 import android.os.AsyncTask;

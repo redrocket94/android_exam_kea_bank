@@ -71,16 +71,13 @@ public class NemIdDialog extends DialogFragment {
                 if (nemIdNumber == generatedValue) {
                     if (intOrExt.equals("ext")) {
                         if (billId != null && billId != 0) {
-                            System.out.println("bill entered");
                             new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer, HRT_SetExtAccValByEmail.SendType.BILL, billId).execute();
                             startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
                         } else if (billId == null || billId == 0) {
-                            System.out.println("ext entered");
                             new HRT_SetExtAccValByEmail(account, email, amountToWithdraw, customer).execute();
                             startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
                         }
                     } else if (intOrExt.equals("int")) {
-                        System.out.println("sent as int");
                         new HRT_UpdateInternalAccValue(customerId, account.getAccountType(), Account.AccountType.valueOf(accountType), amountToDeposit).execute();
                         startActivity(new Intent(getActivity(), OverviewActivity.class).putExtra("customerId", customerId));
                     }

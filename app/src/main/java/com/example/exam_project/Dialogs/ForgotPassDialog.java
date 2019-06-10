@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.exam_project.HttpRequestTasks.HRT_UpdateUserByEmail;
-import com.example.exam_project.MailHandler.SendMail;
+import com.example.exam_project.Modules.MailHandler.SendMail;
 import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 

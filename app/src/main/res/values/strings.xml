@@ -82,6 +82,7 @@
     <string name="accountview_extdeposit_btn">Deposit to External User Account</string>
     <string name="accountview_defwithdraw_btn">Withdraw to Default Account</string>
     <string name="accountview_returnoverview_btn">Return to Overview</string>
+    <string name="accountview_monthlypay_btn">Monthly Billing</string>
     <!-- Internal strings for AccountViewActivity -->
     <!-- Dialog strings for internal deposits in AccountViewActivity -->
     <string name="intdepositdia_titlepartial01_txt">Making deposit from: </string>
@@ -197,6 +198,16 @@
 
     <!-- Strings for InfoSpinner -->
     <string name="infospinner_msg01_toast">Successfully logged out!</string>
+
+    <!-- Strings for IntMonthlyPayDialog -->
+    <string name="monthlypaydia_amount_input">Amount...</string>
+    <string name="monthlypaydia_budget_txt">Budget</string>
+    <string name="monthlypaydia_savings_txt">Savings</string>
+    <string name="monthlypaydia_info_txt">After selecting account and amount above, hit \"Submit\" \n to start your monthly billing to internal account.
+                                        \nMoney will be charged every month until cancelled or not enough funds.</string>
+    <string name="monthpaydia_title_txt">Setting up monthly billing...</string>
+    <string name="monthpaydia_msg01_toast">Successfully set up a monthly billing plan for internal account</string>
+    <string name="monthpaydia_msg02_toast">Successfully transferred money to an internal account with the payment billing plan!</string>
 
 
 </resources>

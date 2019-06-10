@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +18,7 @@ import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
 import com.example.exam_project.Dialogs.ExtDepositDialog;
 import com.example.exam_project.Dialogs.IntDepositDialog;
+import com.example.exam_project.Dialogs.IntMonthlyPayDialog;
 import com.example.exam_project.Dialogs.WithdrawDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
@@ -35,13 +35,7 @@ public class AccountViewActivity extends AppCompatActivity {
     Button withdraw_btn;
     Button deposit_btn;
     Button deposit_external_btn;
-    EditText amountToWithdraw_input;
-    EditText email_input;
-    Spinner accTypeSpinner;
-
-    double amountToWithdraw;
-    int generatedValue;
-    double amountToDeposit;
+    Button monthlypay_btn;
 
     CustomerData customerData;
 
@@ -66,6 +60,8 @@ public class AccountViewActivity extends AppCompatActivity {
         withdraw_btn = findViewById(R.id.withdraw_btn);
         deposit_btn = findViewById(R.id.deposit_btn);
         deposit_external_btn = findViewById(R.id.deposit_external_btn);
+        monthlypay_btn = findViewById(R.id.monthly_pay_btn);
+        monthlypay_btn.setVisibility(View.INVISIBLE);
 
         // If account type is NOT Pension, hide Withdraw button OR if account is default (cant withdraw from default account to nothing)
         if ((account.getAccountType() == Account.AccountType.PENSION && customer.getAge() < 77)) {
@@ -74,6 +70,9 @@ public class AccountViewActivity extends AppCompatActivity {
             deposit_external_btn.setVisibility(View.INVISIBLE);
         } else if (account.getAccountType() == Account.AccountType.DEFAULT) {
             withdraw_btn.setVisibility(View.INVISIBLE);
+        }
+        if (account.getAccountType() == Account.AccountType.BUDGET || account.getAccountType() == Account.AccountType.SAVINGS) {
+            monthlypay_btn.setVisibility(View.VISIBLE);
         }
 
         // Change header text to show type of account
@@ -126,6 +125,16 @@ public class AccountViewActivity extends AppCompatActivity {
 
     }
 
+    public void onClickMonthlyBilling(View v) {
+        super.onStart();
+        Bundle args = new Bundle();
+        args.putParcelable("accountObject", account);
+        args.putParcelable("customerObject", customer);
+        args.putLong("customerId", customerId);
+        IntMonthlyPayDialog intMonthlyPayDialog = new IntMonthlyPayDialog();
+        intMonthlyPayDialog.setArguments(args);
+        intMonthlyPayDialog.show(getSupportFragmentManager(), "int_monthly_pay_dialog");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

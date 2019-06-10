@@ -1,6 +1,8 @@
 package com.example.exam_project.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import com.example.exam_project.Dialogs.NewAccDialog;
 import com.example.exam_project.HttpRequestTasks.DataCustomerParser;
 import com.example.exam_project.HttpRequestTasks.HRT_GetUserById;
 import com.example.exam_project.HttpRequestTasks.HRT_SetExtAccValByEmail;
+import com.example.exam_project.HttpRequestTasks.HRT_UpdateInternalAccValue;
 import com.example.exam_project.R;
 
 import org.joda.time.LocalDate;
@@ -61,8 +64,11 @@ public class OverviewActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
 
+        getBillingBudget();
+        getBillingSavings();
 
         // Set welcome text to users name
         TextView welcomeText = findViewById(R.id.welcomeText);
@@ -208,5 +214,52 @@ public class OverviewActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void getBillingBudget() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+
+        String budgetBill = sharedPreferences.getString("monthlybill_BUDGET_" + customerId, null);
+        if (budgetBill != null) {
+            String dataDate = budgetBill.substring(0, budgetBill.indexOf(" "));
+            double amountToDeposit = Double.parseDouble(budgetBill.substring(budgetBill.indexOf(" ") + 1));
+            String currDate = new LocalDate().getMonthOfYear() + "";
+            if (currDate.equals(dataDate)) {
+                new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.BUDGET, amountToDeposit).execute();
+                Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
+                setBillingMonth(dataDate, "BUDGET", amountToDeposit);
+            }
+        }
+    }
+
+    void getBillingSavings() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+
+        String savingsBill = sharedPreferences.getString("monthlybill_SAVINGS_" + customerId, null);
+        if (savingsBill != null) {
+            String dataDate = savingsBill.substring(0, savingsBill.indexOf(" "));
+            double amountToDeposit = Double.parseDouble(savingsBill.substring(savingsBill.indexOf(" ") + 1));
+            String currDate = new LocalDate().getMonthOfYear() + "";
+            if (currDate.equals(dataDate)) {
+                new HRT_UpdateInternalAccValue(customerId, Account.AccountType.DEFAULT, Account.AccountType.SAVINGS, amountToDeposit).execute();
+                Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
+                setBillingMonth(dataDate, "SAVINGS", amountToDeposit);
+            }
+        }
+    }
+
+    void setBillingMonth(String loadedDate, String AccountTypeStr, double amount) {
+        int myDate = Integer.parseInt(loadedDate);
+        if (myDate == 12) {
+            myDate = 1;
+        } else {
+            myDate++;
+        }
+
+        SharedPreferences.Editor editor = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE).edit();
+
+        editor.putString("monthlybill_" + AccountTypeStr + "_" + customerId,
+                myDate + " " + amount);
+        editor.apply();
     }
 }

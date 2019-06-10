@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.example.exam_project.Account;
 import com.example.exam_project.Bill;
 import com.example.exam_project.Customer;
-import com.example.exam_project.MailHandler.SendMail;
+import com.example.exam_project.Modules.MailHandler.SendMail;
 import com.example.exam_project.Modules.NemID;
 import com.example.exam_project.R;
 

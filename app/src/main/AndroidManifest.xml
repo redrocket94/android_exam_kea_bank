@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.BillViewActivity"></activity>
+        <activity android:name=".Dialogs.IntMonthlyPayDialog"></activity>
+        <activity android:name=".Activities.BillViewActivity" />
         <activity android:name=".Activities.BillsActivity" />
         <activity android:name=".Activities.PassChangeActivity" />
         <activity android:name=".Activities.TransactionsActivity" />
@@ -23,7 +24,6 @@
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.OverviewActivity" />
         <activity android:name=".Activities.MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
