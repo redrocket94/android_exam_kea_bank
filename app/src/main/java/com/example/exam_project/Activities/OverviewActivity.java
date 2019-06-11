@@ -235,7 +235,7 @@ public class OverviewActivity extends AppCompatActivity {
                     Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
                     setBillingMonth(dataDate, "BUDGET", amountToDeposit);
                 } else {
-                    Toast.makeText(this, "Tried to deposit to Billing Account, using your payment billing plan, but you have too little funds! Canceling plan.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.overview_msg06_toast), Toast.LENGTH_SHORT).show();
                     sharedPreferences.edit().remove("monthlybill_BUDGET_" + customerId).apply();
                 }
             }
@@ -256,7 +256,7 @@ public class OverviewActivity extends AppCompatActivity {
                     Toast.makeText(this, getString(R.string.monthpaydia_msg02_toast), Toast.LENGTH_SHORT).show();
                     setBillingMonth(dataDate, "SAVINGS", amountToDeposit);
                 } else {
-                    Toast.makeText(this, "Tried to deposit to Savings Account, using your payment billing plan, but you have too little funds! Canceling plan.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.overview_msg07_toast), Toast.LENGTH_SHORT).show();
                     sharedPreferences.edit().remove("monthlybill_SAVINGS_" + customerId).apply();
 
                 }

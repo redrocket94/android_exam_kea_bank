@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.exam_project.Activities.MainActivity;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
+import com.example.exam_project.R;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -76,7 +77,7 @@ public class HRT_Register extends AsyncTask<Void, Void, CustomerData> {
 
         // Check data username and data password are not null
         if (loginCustomerData != null) {
-            Toast.makeText(context.getApplicationContext(), "Username already exists! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), context.getString(R.string.hrt_msg03_toast), Toast.LENGTH_SHORT).show();
             return;
         } else if (emailCustomerData != null) {
             Toast.makeText(context.getApplicationContext(), "Email already exists! Try again.", Toast.LENGTH_SHORT).show();
@@ -84,7 +85,7 @@ public class HRT_Register extends AsyncTask<Void, Void, CustomerData> {
         }
 
 
-        Toast.makeText(context.getApplicationContext(), "Successfully registered!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context.getApplicationContext(), context.getString(R.string.hrt_msg04_toast), Toast.LENGTH_SHORT).show();
         context.startActivity(new Intent(context, MainActivity.class));
 
     }

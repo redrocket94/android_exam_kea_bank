@@ -71,6 +71,8 @@
     <string name="overview_msg03partial02_toast">to user of email:</string>
     <string name="overview_msg04_toast">Tried to make an AUTOMATIC payment on bill, but funds in DEFAULT account too low!</string>
     <string name="overview_msg05_toast">Sorry, you already have all possible accounts!</string>
+    <string name="overview_msg06_toast">Tried to deposit to Budget Account, using your payment billing plan, but you have too little funds! Canceling plan.</string>
+    <string name="overview_msg07_toast">Tried to deposit to Savings Account, using your payment billing plan, but you have too little funds! Canceling plan.</string>
     <string name="overview_newaccinfo_btn">Approval pending...</string>
     <string name="overview_newacctitle_txt">Opening a new account...</string>
     <string name="overview_newaccdiapositive_btn">Open account</string>
@@ -207,6 +209,17 @@
     <string name="monthpaydia_title_txt">Setting up monthly billing...</string>
     <string name="monthpaydia_msg01_toast">Successfully set up a monthly billing plan for internal account</string>
     <string name="monthpaydia_msg02_toast">Successfully transferred money to an internal account with the payment billing plan!</string>
+    <string name="monthpaydia_msg03_toast">Successfully cancelled your Billing Plan!</string>
+
+    <!-- Strings for HRTs (HttpRequestTasks) -->
+    <string name="hrt_msg01_toast">Make sure both username and password are filled out and try again!</string>
+    <string name="hrt_msg02_toast">Invalid username and/or password!</string>
+    <string name="hrt_msg03_toast">Username already exists! Try again.</string>
+    <string name="hrt_msg04_toast">Successfully registered!</string>
+    <string name="hrt_msg05_toast">Requested new password!\nCheck your email for information.</string>
+    <string name="hrt_msg06_toast">Transaction sent for verification!\nCheck your email for required pin.</string>
+    <string name="hrt_msg07_toast">Failed to request new password!</string>
+    <string name="hrt_msg08_toast">Failed to make a transaction!</string>
 
 
 </resources>

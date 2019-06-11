@@ -53,13 +53,14 @@ public class IntMonthlyPayDialog extends DialogFragment {
 
         cancel_billing_btn = mView.findViewById(R.id.cancel_billing_btn);
 
+
         cancel_billing_btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 sharedPreferences.edit().remove("monthlybill_" + account.getAccountType().toString() + "_" + customerId).apply();
                 amountToBill_input.setText("");
-                Toast.makeText(getActivity(), "Successfully removed your Billing Plan!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.monthpaydia_msg03_toast), Toast.LENGTH_SHORT).show();
             }
         });
         amountToBill_input = mView.findViewById(R.id.amount_to_bill);
@@ -67,6 +68,8 @@ public class IntMonthlyPayDialog extends DialogFragment {
         String monthlyBilling = sharedPreferences.getString("monthlybill_" + account.getAccountType().toString() + "_" + customerId, null);
         if (monthlyBilling != null) {
             amountToBill_input.setText(monthlyBilling.substring(monthlyBilling.indexOf(" ") + 1));
+        } else {
+            cancel_billing_btn.setVisibility(View.INVISIBLE);
         }
 
         builder.setPositiveButton(getString(R.string.intdepositdia_positive_btn), new DialogInterface.OnClickListener() {

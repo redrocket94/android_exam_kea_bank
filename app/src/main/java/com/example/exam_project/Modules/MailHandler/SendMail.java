@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.example.exam_project.R;
+
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -63,15 +65,15 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
         if (hadNoError) {
             if (mailType == MailType.PASSWORD_RESET) {
-                Toast.makeText(context, "Requested new password!\nCheck your email for information.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.hrt_msg05_toast), Toast.LENGTH_SHORT).show();
             } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
-                Toast.makeText(context, "Transaction sent for verification!\nCheck your email for required pin.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.hrt_msg06_toast), Toast.LENGTH_SHORT).show();
             }
         } else {
             if (mailType == MailType.PASSWORD_RESET) {
-                Toast.makeText(context, "Failed to request new password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.hrt_msg07_toast), Toast.LENGTH_SHORT).show();
             } else if (mailType == MailType.TRANSACTION_CONFIRMATION) {
-                Toast.makeText(context, "Failed to make a transaction!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.hrt_msg06_toast), Toast.LENGTH_SHORT).show();
             }
         }
     }

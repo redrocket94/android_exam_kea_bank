@@ -129,4 +129,15 @@
     <string name="overview_newaccinfo_btn">Godkendelse afventer...</string>
     <string name="overview_newacctitle_txt">Åbner en ny konto...</string>
     <string name="withdrawdialog_msg02_toast">Hævede succesfuldt penge til DEFAULT konto!</string>
+    <string name="hrt_msg01_toast">Vær sikker på både brugernavn og kodeord er indtastet og prøv igen!</string>
+    <string name="hrt_msg02_toast">Ugyldigt brugernavn og/eller kodeord!</string>
+    <string name="hrt_msg03_toast">Brugernavn optaget! Prøv igen.</string>
+    <string name="hrt_msg04_toast">Du blev succesfuldt registreret!</string>
+    <string name="hrt_msg05_toast">Anmodede om nyt kodeord! Tjek din email for mere information.</string>
+    <string name="hrt_msg06_toast">Transaktion sendt til verifikation! Tjek din email for påkrævet pinkode.</string>
+    <string name="hrt_msg07_toast">Kunne ikke anmode om ny adgangskode!</string>
+    <string name="hrt_msg08_toast">Kunne ikke foretage transaktion!</string>
+    <string name="monthpaydia_msg03_toast">Din faktureringsplan blev annulleret!</string>
+    <string name="overview_msg06_toast">Forsøgte at indbetale til budget konto ved brug af fakturerings plan, men du har for lavt beløb! Annullerer betalingsplan.</string>
+    <string name="overview_msg07_toast">Forsøgte at indbetale til savings konto ved brug af fakturerings plan, men du har for lavt beløb! Annullerer betalingsplan.</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.exam_project.Activities.OverviewActivity;
 import com.example.exam_project.Customer;
 import com.example.exam_project.CustomerData;
+import com.example.exam_project.R;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -73,7 +74,7 @@ public class HRT_Login extends AsyncTask<Void, Void, CustomerData> {
 
         // Check customerData username and customerData password are not null
         if (customerData == null) {
-            Toast.makeText(context, "Make sure both username and password are filled out and try again!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.hrt_msg01_toast), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -117,7 +118,7 @@ public class HRT_Login extends AsyncTask<Void, Void, CustomerData> {
 
             } else {
                 // Inform user that username and/or password combination is incorrect
-                Toast.makeText(context, "Invalid username and/or password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.hrt_msg02_toast), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Log.e("LoginActivity", e.getMessage(), e);
