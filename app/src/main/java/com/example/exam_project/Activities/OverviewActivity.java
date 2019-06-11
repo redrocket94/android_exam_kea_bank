@@ -3,9 +3,8 @@ package com.example.exam_project.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +14,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.exam_project.Account;
 import com.example.exam_project.Bill;
@@ -113,10 +115,13 @@ public class OverviewActivity extends AppCompatActivity {
             TextView accountType = new TextView(this);
             accountType.setText(account.getAccountType().toString());
             accountType.setTextSize(18);
+            accountType.setTextColor(Color.parseColor("#0c4563"));
             table.addView(accountType);
 
             Button button = new Button(this);
             button.setText(getString(R.string.bills_btntxt_btn));
+            button.setTextColor(Color.parseColor("#ffffff"));
+            button.setBackgroundColor(Color.parseColor("#0c4563"));
 
             // Test if you have approval for accounts, if not then disable and set button text
             if (!account.isApproved()) {

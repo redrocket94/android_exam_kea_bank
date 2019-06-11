@@ -3,12 +3,13 @@ package com.example.exam_project.Activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exam_project.Customer;
 import com.example.exam_project.Dialogs.ForgotPassDialog;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Hiding actionbar for loginscreen
+        getSupportActionBar().hide();
 
         login_btn = findViewById(R.id.login_btn);
         username = findViewById(R.id.username);

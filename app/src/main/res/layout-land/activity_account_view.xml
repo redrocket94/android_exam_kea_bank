@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,6 +17,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/accountview_accounttype_txt"
+        android:textColor="@color/colorKea"
+        android:textStyle="bold"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +29,7 @@
 
     <EditText
         android:id="@+id/account_amount"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -39,6 +41,7 @@
         android:ems="10"
         android:inputType="numberDecimal"
         android:text="@string/accountview_amount_input"
+        android:textColor="@color/colorKea"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.796"
@@ -57,6 +60,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="212dp"
         android:text="@string/accountview_intdeposit_btn"
+        android:background="#0c4563"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/account_amount"
         app:layout_constraintHorizontal_bias="0.187"
@@ -72,6 +77,8 @@
         android:layout_marginBottom="96dp"
         android:onClick="onClickWithdraw"
         android:text="@string/accountview_defwithdraw_btn"
+        android:background="#0c4563"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/deposit_external_btn"
         app:layout_constraintHorizontal_bias="0.0"
@@ -87,6 +94,8 @@
         android:layout_marginBottom="44dp"
         android:onClick="onClickBack"
         android:text="@string/accountview_returnoverview_btn"
+        android:background="#0c4563"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/account_amount"
         app:layout_constraintHorizontal_bias="1.0"
@@ -100,6 +109,8 @@
         android:layout_height="wrap_content"
         android:onClick="onClickUserDeposit"
         android:text="@string/accountview_extdeposit_btn"
+        android:background="#0c4563"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/deposit_btn"
         app:layout_constraintHorizontal_bias="1.0"
@@ -115,6 +126,8 @@
         android:layout_marginBottom="8dp"
         android:onClick="onClickMonthlyBilling"
         android:text="@string/accountview_monthlypay_btn"
+        android:background="#0c4563"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/withdraw_btn"
         app:layout_constraintHorizontal_bias="0.0"
@@ -122,4 +135,4 @@
         app:layout_constraintTop_toBottomOf="@+id/withdraw_btn"
         app:layout_constraintVertical_bias="0.02" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
